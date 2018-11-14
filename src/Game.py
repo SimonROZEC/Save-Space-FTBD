@@ -1,6 +1,11 @@
 import pygame
 from Player import *
 
+try:
+    xrange
+except NameError:
+    xrange = range
+
 WIDTH = 600
 HEIGHT = 800
 FPS = 60
@@ -20,6 +25,7 @@ keys = {
 }
 
 background = pygame.image.load('./res/Images/Background/darkPurple.png').convert()
+boss = pygame.image.load('./res/Images/Enemies/boss.png').convert_alpha()
 
 def main() :
     p = Player()
@@ -27,7 +33,7 @@ def main() :
 
     running = True
     offset = 0
-    
+
     while running :
         dt = clock.tick(FPS)
 
@@ -70,6 +76,9 @@ def main() :
 
         p.update(keys, dt, lasers)
         p.render(window)
+        
+        window.blit(boss, (600/2 - 150, 16))
+
         pygame.display.flip()
 
 main()

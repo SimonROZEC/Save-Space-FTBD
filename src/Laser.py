@@ -2,11 +2,13 @@ import pygame
 from math import *
 from random import *
 
+from Collider import *
+
 class Laser(pygame.sprite.Sprite):
     def __init__(self, owner, pos, dir, speed, lifetime = 60) :
         pygame.sprite.Sprite.__init__(self)
         self.pos = pos
-        precision = uniform(-0.1, 0.1)
+        precision = uniform(-0.05, 0.05)
         dir += precision
         self.angle = degrees(-dir) - 90
         self.vel = pygame.math.Vector2(speed * cos(dir), speed * sin(dir))
@@ -16,6 +18,8 @@ class Laser(pygame.sprite.Sprite):
         
         self.maxlife = lifetime
         self.lifetime = lifetime
+
+        self.collider = Collider(self, 4, pygame.math.Vector2(4, 4))
 
     def update(self, dt, lasers) :
         
@@ -31,4 +35,4 @@ class Laser(pygame.sprite.Sprite):
 
     def render(self, window) :
         window.blit(pygame.transform.rotozoom(self.frames[int(self.anim)], self.angle, (float(self.lifetime)/float(self.maxlife))),self.pos)
-        
+        self.collider.render(window)

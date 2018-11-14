@@ -1,6 +1,7 @@
 import pygame
 from math import *
 from Laser import *
+from Collider import *
 
 OFFSET_LASER_LEFT = pygame.math.Vector2(16, 48)
 OFFSET_LASER_RIGHT = pygame.math.Vector2(83-16, 48)
@@ -17,6 +18,7 @@ class Player(pygame.sprite.Sprite):
         self.anim = 0
 
         self.firecd = 0
+        self.collider = Collider(self, 32, pygame.math.Vector2(50, 40))
 
     def update(self, keys, dt, lasers) :
         if keys['up'] :
@@ -34,18 +36,6 @@ class Player(pygame.sprite.Sprite):
         else :
             self.acc.x = 0
             self.vel.x *= 0.90
-        
-        # create lasers
-        if keys['fire'] and self.firecd <= 0:
-            self.firecd = 8
-            speed = 1
-            if self.vel.y < 0 :
-                speed += -self.vel.y * 0.05
-            l1 = Laser(self, self.pos + OFFSET_LASER_LEFT, -pi*0.5, speed, 30)
-            l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, -pi*0.5, speed, 30)
-            lasers.append(l2)
-            lasers.append(l1)
-        self.firecd -= 1
 
         # window border forcefield
         if (self.pos.x < 0) :
@@ -63,11 +53,19 @@ class Player(pygame.sprite.Sprite):
         if self.vel.length() > 20 :
             self.vel.scale_to_length(20)
 
-        
-
         self.pos += self.vel
 
-        
+        # create lasers
+        if keys['fire'] and self.firecd <= 0:
+            self.firecd = 8
+            speed = 1
+            if self.vel.y < 0 :
+                speed += -self.vel.y * 0.05
+            l1 = Laser(self, self.pos + OFFSET_LASER_LEFT, -pi*0.5, speed, 60)
+            l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, -pi*0.5, speed, 60)
+            lasers.append(l2)
+            lasers.append(l1)
+        self.firecd -= 1
 
     def render(self, window) :
         offx = self.vel.x * 2 if self.vel.x > 0 else 0
@@ -87,4 +85,6 @@ class Player(pygame.sprite.Sprite):
             window.blit(pygame.transform.rotate(self.fire[self.anim], 90), self.pos+(scalex + 3, 50-14/2))
 
         self.anim = (self.anim + 1) % 3
+
+        self.collider.render(window)
         
