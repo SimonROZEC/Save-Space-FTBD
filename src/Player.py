@@ -3,6 +3,8 @@ from math import *
 from Laser import *
 from Collider import *
 
+debug = False
+
 OFFSET_LASER_LEFT = pygame.math.Vector2(16, 48)
 OFFSET_LASER_RIGHT = pygame.math.Vector2(83-16, 48)
 
@@ -61,8 +63,8 @@ class Player(pygame.sprite.Sprite):
             speed = 1
             if self.vel.y < 0 :
                 speed += -self.vel.y * 0.05
-            l1 = Laser(self, self.pos + OFFSET_LASER_LEFT, -pi*0.5, speed, 60)
-            l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, -pi*0.5, speed, 60)
+            l1 = Laser(self, self.pos + OFFSET_LASER_LEFT, -pi*0.5, speed, 20)
+            l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, -pi*0.5, speed, 20)
             lasers.append(l2)
             lasers.append(l1)
         self.firecd -= 1
@@ -86,5 +88,6 @@ class Player(pygame.sprite.Sprite):
 
         self.anim = (self.anim + 1) % 3
 
-        self.collider.render(window)
+        if debug :
+            self.collider.render(window)
         

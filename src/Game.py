@@ -1,5 +1,7 @@
 import pygame
 from Player import *
+from Boss import *
+from Laser import *
 
 try:
     xrange
@@ -25,10 +27,11 @@ keys = {
 }
 
 background = pygame.image.load('./res/Images/Background/darkPurple.png').convert()
-boss = pygame.image.load('./res/Images/Enemies/boss.png').convert_alpha()
 
 def main() :
     p = Player()
+    b = Boss()
+    
     lasers = []
 
     running = True
@@ -77,7 +80,11 @@ def main() :
         p.update(keys, dt, lasers)
         p.render(window)
         
-        window.blit(boss, (600/2 - 150, 16))
+        b.update(dt, lasers)
+        b.render(window)
+
+        for li in laser_particles :
+            li.render(window)
 
         pygame.display.flip()
 
