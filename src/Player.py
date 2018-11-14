@@ -8,6 +8,20 @@ debug = False
 OFFSET_LASER_LEFT = pygame.math.Vector2(16, 48)
 OFFSET_LASER_RIGHT = pygame.math.Vector2(83-16, 48)
 
+class PlayerLifebar(pygame.sprite.Sprite):
+    def __init__(self) :
+        pygame.sprite.Sprite.__init__(self)
+        self.lifes = 5
+        self.icon = pygame.image.load('./res/Images/UI/playerLife1_green.png').convert_alpha()
+
+    def remove_life(self) :
+        if self.lifes > 0 :
+            self.lifes -= 1
+
+    def render(self, window) :
+        for i in range(self.lifes) :
+            window.blit(self.icon, (10 + i*36, 800 - 40))
+
 class Player(pygame.sprite.Sprite):
     def __init__(self) :
         pygame.sprite.Sprite.__init__(self)
@@ -20,9 +34,16 @@ class Player(pygame.sprite.Sprite):
         self.anim = 0
 
         self.firecd = 0
+        self.invulframe = 0
+
         self.collider = Collider(self, 32, pygame.math.Vector2(50, 40))
 
+        self.lifebar = PlayerLifebar()
+        self.time = 0
+
     def update(self, keys, dt, lasers, boss) :
+        self.time += 0.5
+
         if keys['up'] :
             self.acc.y = -0.1
         elif keys['down'] :
@@ -55,6 +76,11 @@ class Player(pygame.sprite.Sprite):
                 force = (self.pos - (boss.pos+(128, 20)))
                 force.scale_to_length(2)
                 self.acc += force
+                if self.invulframe <= 0 :
+                    self.lifebar.remove_life()
+                    self.invulframe = 30 # durée de la frame d'invulnérabilité
+
+        self.invulframe -= 1
 
         self.vel += self.acc * dt
 
@@ -79,7 +105,8 @@ class Player(pygame.sprite.Sprite):
     def render(self, window) :
         offx = self.vel.x * 2 if self.vel.x > 0 else 0
         scalex = 99 - abs(2 * int(self.vel.x))
-        window.blit(pygame.transform.scale(self.image, (scalex, 75)), self.pos+(offx, 0))
+        if self.invulframe <= 0 or self.time % 2 == 0 :
+            window.blit(pygame.transform.scale(self.image, (scalex, 75)), self.pos+(offx, 0))
         
         if (self.acc.y < 0) :
             z = self.vel.x * 0.01
@@ -94,6 +121,8 @@ class Player(pygame.sprite.Sprite):
             window.blit(pygame.transform.rotate(self.fire[self.anim], 90), self.pos+(scalex + 3, 50-14/2))
 
         self.anim = (self.anim + 1) % 3
+
+        self.lifebar.render(window)
 
         if debug :
             self.collider.render(window)
