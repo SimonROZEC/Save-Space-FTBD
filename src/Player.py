@@ -22,7 +22,7 @@ class Player(pygame.sprite.Sprite):
         self.firecd = 0
         self.collider = Collider(self, 32, pygame.math.Vector2(50, 40))
 
-    def update(self, keys, dt, lasers) :
+    def update(self, keys, dt, lasers, boss) :
         if keys['up'] :
             self.acc.y = -0.1
         elif keys['down'] :
@@ -48,6 +48,13 @@ class Player(pygame.sprite.Sprite):
             self.acc.y = 0.1
         if (self.pos.y > 800 - 75) :
             self.acc.y = -0.1
+
+        # boss collision 
+        for c in boss.colliders :
+            if self.collider.collides(c) :
+                force = (self.pos - (boss.pos+(128, 20)))
+                force.scale_to_length(2)
+                self.acc += force
 
         self.vel += self.acc * dt
 

@@ -17,6 +17,7 @@ class LaserImpact(pygame.sprite.Sprite):
         r = randint(0, 10)
         self.maxlife = lifetime + r
         self.lifetime = self.maxlife
+        self.scale = uniform(0.1, 0.2 + self.lifetime/(owner.maxlife + 1))
 
     def render(self, window) :
         
@@ -24,7 +25,7 @@ class LaserImpact(pygame.sprite.Sprite):
         self.anim = self.anim % len(self.frames)
 
         self.lifetime -= 1
-        window.blit(pygame.transform.rotozoom(self.frames[int(self.anim)], 0, (float(self.lifetime)/float(self.maxlife))),self.pos)
+        window.blit(pygame.transform.rotozoom(self.frames[int(self.anim)], 0, (float(self.lifetime)/float(self.maxlife) + self.scale)),self.pos-(19*self.scale, 19*self.scale))
 
 
 
@@ -65,5 +66,5 @@ class Laser(pygame.sprite.Sprite):
             self.collider.render(window)
 
     def destroy(self, lasers) :
-            laser_particles.append(LaserImpact(self, self.pos))
+            laser_particles.append(LaserImpact(self, self.pos, self.lifetime + 1))
             lasers.remove(self)

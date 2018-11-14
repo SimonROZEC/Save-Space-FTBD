@@ -77,7 +77,7 @@ def main() :
             l.update(dt, lasers)
             l.render(window)
 
-        p.update(keys, dt, lasers)
+        p.update(keys, dt, lasers, b)
         p.render(window)
         
         b.update(dt, lasers)
