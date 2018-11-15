@@ -233,20 +233,23 @@ while menu() :
     textTexture = createTextTexture('You lost', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
 
     coordTextStart = pygame.math.Vector2(-500, CENTERY)
+    coordMiddleText = pygame.math.Vector2(CENTERX - 75, CENTERY)
 
-    coordMiddleText = pygame.math.Vector2(WIDTH*0.5 - 65, CENTERY)
-
-    phaseOneDone = False
     coordText = coordTextStart
 
-    while (frameCount <= 2500 ) :
-        
+    while True :
+        clock.tick(FPS)
+
         for x in xrange(-256, WIDTH, 256) :
             for y in xrange(-256, HEIGHT, 256) :
                 drawTexture(window, background, (x, y))
         
-        if(coordText.length() >= 50 and (not phaseOneDone)) :
+        if((coordText - coordMiddleText).length() >= 3) :
             coordText = coordText.lerp(coordMiddleText, 0.05)
+            print("qd")
+        else :
+            print("azeaze")
+            break
 
         drawTexture(window, textTexture, coordText)
         pygame.display.flip()
