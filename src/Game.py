@@ -91,7 +91,7 @@ def main() :
 
         for li in laser_particles :
             li.render(window)
-
+ 
         pygame.display.flip()
 
 main()
