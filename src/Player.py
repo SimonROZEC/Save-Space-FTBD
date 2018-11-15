@@ -2,6 +2,7 @@ import pygame
 from math import *
 from Laser import *
 from Collider import *
+from LoadImages import *
 
 debug = False
 
@@ -12,7 +13,7 @@ class PlayerLifebar(pygame.sprite.Sprite):
     def __init__(self) :
         pygame.sprite.Sprite.__init__(self)
         self.lifes = 5
-        self.icon = pygame.image.load('./res/Images/UI/playerLife1_green.png').convert_alpha()
+        self.icon = images['PLAYER_LIFE_ICON']
 
     def remove_life(self) :
         if self.lifes > 0 :
@@ -25,12 +26,15 @@ class PlayerLifebar(pygame.sprite.Sprite):
 class Player(pygame.sprite.Sprite):
     def __init__(self) :
         pygame.sprite.Sprite.__init__(self)
+
+        self.type = 'PLAYER'
+
         self.pos = pygame.math.Vector2(400, 300)
         self.vel = pygame.math.Vector2(0, 0)
         self.acc = pygame.math.Vector2(0, 0)
 
-        self.image = pygame.image.load('./res/Images/playerShip1_green.png').convert_alpha()
-        self.fire = [pygame.image.load('./res/Images/Effects/fire' + str(i) + '.png').convert_alpha() for i in range(15, 18)]
+        self.image = images['PLAYER_SHIP']
+        self.fire = images['PLAYER_THRUSTER']
         self.anim = 0
 
         self.firecd = 0
@@ -78,7 +82,19 @@ class Player(pygame.sprite.Sprite):
                 self.acc += force
                 if self.invulframe <= 0 :
                     self.lifebar.remove_life()
-                    self.invulframe = 30 # durée de la frame d'invulnérabilité
+                    self.invulframe = 30 # duree de la frame d'invulnerabilite
+
+        # laser collision
+        for laser in lasers :
+            
+            print(laser.owner.type)
+
+            if not laser.owner.type == 'BOSS' :
+                break
+
+            collider = laser.collider
+            if self.collider.collides(collider) : #collision
+                laser.destroy(lasers)
 
         self.invulframe -= 1
 
@@ -92,7 +108,7 @@ class Player(pygame.sprite.Sprite):
 
         # create lasers
         if keys['fire'] and self.firecd <= 0:
-            self.firecd = 8
+            self.firecd = 0
             speed = 1
             if self.vel.y < 0 :
                 speed += -self.vel.y * 0.05

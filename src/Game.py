@@ -1,7 +1,4 @@
 import pygame
-from Player import *
-from Boss import *
-from Laser import *
 
 try:
     xrange
@@ -18,6 +15,12 @@ clock = pygame.time.Clock()
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space Shooter")
 
+from LoadImages import *
+
+from Player import *
+from Boss import *
+from Laser import *
+
 keys = {
     'up'   : False,
     'down' : False,
@@ -26,13 +29,16 @@ keys = {
     'fire' : False
 }
 
-background = pygame.image.load('./res/Images/Background/darkPurple.png').convert()
+background = images['BACKGROUND']
 
 def main() :
-    p = Player()
-    b = Boss()
-    
+
     lasers = []
+
+    p = Player()
+    b = Boss(lasers)
+    
+
 
     running = True
     offset = 0
@@ -80,7 +86,7 @@ def main() :
         p.update(keys, dt, lasers, b)
         p.render(window)
         
-        b.update(dt, lasers)
+        b.update(dt)
         b.render(window)
 
         for li in laser_particles :

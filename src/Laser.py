@@ -4,6 +4,8 @@ from random import *
 
 from Collider import *
 
+from LoadImages import *
+
 debug = False
 
 laser_particles = []
@@ -12,11 +14,15 @@ class LaserImpact(pygame.sprite.Sprite):
     def __init__(self, owner, pos, lifetime = 30) :
         pygame.sprite.Sprite.__init__(self)
         self.pos = pos
-        self.frames = [pygame.image.load('./res/Images/Lasers/expGreen' + str(i) + '.png').convert_alpha() for i in range(1, 5)]
+        if owner.owner.type == 'PLAYER' :
+            self.frames = images['LASER_PLAYER_EXPLOSION']
+        else :
+            self.frames = images['LASER_ENEMY_EXPLOSION']
         self.anim = 0
-        r = randint(0, 10)
-        self.maxlife = lifetime + r
+        r = randint(10, 30)
+        self.maxlife = r
         self.lifetime = self.maxlife
+
         self.scale = uniform(0.1, 0.2 + self.lifetime/(owner.maxlife + 1))
 
     def render(self, window) :
@@ -28,18 +34,21 @@ class LaserImpact(pygame.sprite.Sprite):
         window.blit(pygame.transform.rotozoom(self.frames[int(self.anim)], 0, (float(self.lifetime)/float(self.maxlife) + self.scale)),self.pos-(19*self.scale, 19*self.scale))
 
 
-
-
 class Laser(pygame.sprite.Sprite):
     def __init__(self, owner, pos, dir, speed, lifetime = 60) :
         pygame.sprite.Sprite.__init__(self)
+        
+        self.owner = owner
         self.pos = pos
         precision = uniform(-0.05, 0.05)
         dir += precision
         self.angle = degrees(-dir) - 90
         self.vel = pygame.math.Vector2(speed * cos(dir), speed * sin(dir))
-
-        self.frames = [pygame.image.load('./res/Images/Lasers/laserGreen' + str(i) + '.png').convert_alpha() for i in range(10, 14)]
+        if owner.type == 'PLAYER' :
+            self.frames = images['LASER_PLAYER']
+        else :
+            self.frames = images['LASER_ENEMY']
+        
         self.anim = 0
         
         r = randint(0, 15)
@@ -50,7 +59,7 @@ class Laser(pygame.sprite.Sprite):
 
     def update(self, dt, lasers) :
         
-        if self.lifetime <= 0 or self.pos.y < -13 :
+        if self.lifetime <= 0 or self.pos.y < -13 or self.pos.y > 813:
             lasers.remove(self)
 
         self.lifetime -= 1

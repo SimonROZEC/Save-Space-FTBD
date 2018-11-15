@@ -2,60 +2,79 @@ import pygame
 from math import *
 from Laser import *
 from Collider import *
+from LoadImages import *
 
 debug = False
 
-OFFSET_LASER_LEFT = pygame.math.Vector2(16, 48)
-OFFSET_LASER_RIGHT = pygame.math.Vector2(83-16, 48)
+OFFSET_LASER_LEFT = pygame.math.Vector2(82, 175)
+OFFSET_LASER_RIGHT = pygame.math.Vector2(164, 170)
+
+class BossState:
+    def __init__(self, boss, prepare, update, end, render) :
+        self.boss = boss
+        self.p = prepare # update preparation du boss pour commencer l'etat + condition de fin de preparation
+        self.u = update # mise a jour du boss pour un etat specifique
+        self.r = render # affichage d'effets graphiques specifiques a l'etat
+        self.e = end # condition de fin de l'etat et passage a l'etat suivant
+        self.time = 0
+        self.prepared = False # le boss a termine la phase de preparation de son etat
+    
+    def update(self):
+        self.time += 1
+        if self.prepared :
+            self.u(self, self.boss)
+        else :
+            self.p(self, self.boss)
+        
+        self.e(self, self.boss)
+
+    def render(self, window):
+        self.r(self, window)
+
+from BossIA import states
 
 class Boss(pygame.sprite.Sprite):
-    def __init__(self) :
+    def __init__(self, lasers) :
         pygame.sprite.Sprite.__init__(self)
 
-        self.pos = pygame.math.Vector2(150 / 2, 16)
+        self.type = 'BOSS'
+
+        self.pos = pygame.math.Vector2(150 * 0.5, 16)
         self.vel = pygame.math.Vector2(0, 0)
         self.acc = pygame.math.Vector2(0, 0)
-        self.image = pygame.image.load('./res/Images/Enemies/boss.png').convert_alpha()
-        
-        self.fire = [pygame.image.load('./res/Images/Effects/fire' + str(i) + '.png').convert_alpha() for i in range(15, 18)]
-        self.anim = 0
+        self.image = images['BOSS_SHIP']
 
-        self.firecd = 0
         self.colliders = [
             Collider(self, 48, pygame.math.Vector2(38, 150)),
             Collider(self, 48, pygame.math.Vector2(257 - 38, 150)),
-            Collider(self, 96, pygame.math.Vector2(257 / 2, 40))
+            Collider(self, 96, pygame.math.Vector2(257 * 0.5, 40))
         ]
 
-        self.time = 0
-        
-    def update(self, dt, lasers) :
-        self.time += 1
-        
-        # window border forcefield
-        if (self.pos.x < 0) :
-            self.acc.x = 0.1
-        if (self.pos.x > 600 - 99) :
-            self.acc.x = -0.1
-        if (self.pos.y < 0) :
-            self.acc.y = 0.1
-        if (self.pos.y > 800 - 75) :
-            self.acc.y = -0.1
+        self.states = states(self)
+        self.state = self.states['start']
 
-        self.vel.x = sin(float(self.time) / 100.0)
+        self.lasers = lasers
+    
+    def fire(self) :
+        l1 = Laser(self, self.pos + OFFSET_LASER_LEFT, pi*0.5, 0.5, 1000)
+        l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, pi*0.5, 0.5, 1000)
+        self.lasers.append(l2)
+        self.lasers.append(l1)
 
-        # limit player speed
-        if self.vel.length() > 20 :
-            self.vel.scale_to_length(20)
+    def update(self, dt) :
+
+        self.state.update()
 
         self.pos += self.vel
 
         # check collisions
-        for laser in lasers :
+        for laser in self.lasers :
+            
             collider = laser.collider
             for col in self.colliders :
-                if col.collides(collider) : #collision
-                    laser.destroy(lasers)
+                if laser.owner.type == 'PLAYER' and col.collides(collider) : #collision
+                    print(laser.owner.type)
+                    laser.destroy(self.lasers)
                     break
 
     def render(self, window) :
