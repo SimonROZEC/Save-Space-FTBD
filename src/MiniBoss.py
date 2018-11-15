@@ -59,8 +59,8 @@ class MiniBoss(pygame.sprite.Sprite):
         self.lasers = lasers
     
     def fire(self, target, precision = 0.05)  :
-        l = Laser(self, self.pos + OFFSET_LASER, pi*0.5, 0.5, 1000, 1.5, precision)
-        self.lasers.append(l)
+        laser = Laser(self, self.pos + OFFSET_LASER, pi*0.5, 0.5, 1000, 1.5, precision)
+        self.lasers.append(laser)
 
     def update(self, dt) :
 

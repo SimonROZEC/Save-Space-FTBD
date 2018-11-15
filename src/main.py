@@ -5,6 +5,7 @@ from globaldefines import *
 # init sdl
 pygame.init()
 window = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("-#- Space Shooter -#-")
 
 clock = pygame.time.Clock()
 
@@ -35,8 +36,6 @@ from Laser import *
 # Return false if game was closed py player, true if player lost
 #
 def main() :   
-    pygame.display.set_caption("-#- Space Shooter -#-")
-
     lasers = []
 
     player = Player()
@@ -134,7 +133,7 @@ def startAnim(player) :
             currentCoord = coordsEnd
 
         if((coordsEnd - player.pos).length() < 10) :
-            return
+            return True
 
         # move back ground according to player poss
         offx = - sin(framecount*0.01) * 30
@@ -146,10 +145,12 @@ def startAnim(player) :
         player.render(window)
         pygame.display.flip()
 
-        # process event so it dont freeze
-        #pygame.event.get()
+        for event in pygame.event.get() :
+            if event.type == pygame.QUIT :
+                return False
 
         framecount += 1
+    return True
 
 ## Menu
 def menu() :
@@ -175,12 +176,12 @@ def menu() :
                 return
             elif event.type == pygame.KEYDOWN :
                 if event.key == pygame.K_SPACE :   
-                    startAnim(player)              
+                    if(not startAnim(player)) :
+                        return False
+
                     if (main()) :
-                        print('menu')
                         return True 
                     else :
-                        print('quit')
                         return False
 
         player.render(window)
@@ -218,8 +219,11 @@ while menu() :
         if(coordText.length() >= 50 and (not phaseOneDone)) :
             coordText = coordText.lerp(coordMiddleText, 0.05)
 
-
         drawTexture(window, textTexture, coordText)
         pygame.display.flip()
+
+        for event in pygame.event.get() :
+            if event.type == pygame.QUIT :
+                quit()
 
         frameCount += 1
