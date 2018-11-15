@@ -5,7 +5,18 @@ from math import *
 from random import *
 from MiniBoss import BossState
 
+# méthode sécurisé pour lerp un point
+def target_point(start, target, speed) :
+    d = (target - start) * speed
+    if d.length() < 2 :
+        if dist_to_point(start, target) < 2 :
+            return target
+        else :
+            d.scale_to_length(2)
+    return start + d
 
+def dist_to_point(start, target) :
+    return (target-start).length()
 
 # Scene setup
 def start_init(self, boss) :
@@ -20,7 +31,7 @@ def start_prepare(self, boss) :
     #pass
 
 def start_update(self, boss) :
-    self.current_pos = self.current_pos.lerp(self.start_pos-(0, 20), 0.03)
+    self.current_pos = self.current_pos.lerp(self.start_pos, 0.03)
     #pass
 
 def start_render(self, window) :
@@ -29,7 +40,7 @@ def start_render(self, window) :
     pass
 
 def start_end(self, boss) :
-    if self.prepared and (self.start_pos-(0, 20)-self.current_pos).length() < 10 :
+    if self.prepared and (self.start_pos-self.current_pos).length() < 10 :
         boss.set_state('phase1')
     pass
 
@@ -56,7 +67,7 @@ def phase1_render(self, window) :
     pass
 
 def phase1_end(self, boss) :
-    if boss.lifeBar.lifes * boss.lifeBar.maxLife <= 0.5 :
+    if boss.lifeBar.life * boss.lifeBar.maxLife <= 0.5 :
         boss.set_state('phase2')
     pass
 
@@ -66,9 +77,9 @@ def phase2_prepare(self, boss) :
     # boss.pos = boss.pos.lerp((CENTERX, 400), 0.1)
     boss.target_point((CENTERX, 400), 0.1)
     d = boss.dist_to_point((CENTERX, 400))
-    print('dist : ' + str(d))
+    # print('dist : ' + str(d))
     if d < 10 :
-        print("ok" + str(self.time))
+        # print("ok" + str(self.time))
         self.prepared = True
     #pass
 

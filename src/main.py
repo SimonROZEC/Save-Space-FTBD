@@ -1,5 +1,7 @@
 #imports
 import pygame
+from queue import Queue
+
 from globaldefines import *
 
 # init sdl
@@ -31,6 +33,7 @@ from Laser import *
 #
 def main() :   
     lasers = []
+    bossAndAddQueue = Queue()
 
     # struct
     keys = {
@@ -42,12 +45,16 @@ def main() :
     }
 
     player = Player()
-    miniBoss = MiniBoss(lasers, player)
-    
-    running = True
+
+    bossAndAddQueue.put(MiniBoss(lasers, player))
+    #bossAndAddQueue.put(Meteorite())
+    #bossAndAddQueue.put(Boss(lasers, player))
 
     backgroundOffset = 0
     background = textures['BACKGROUND']
+
+    running = True
+    currentEnemy = bossAndAddQueue.get()
 
     while running :
         # time since last frame, should be 1/FPS
@@ -84,8 +91,8 @@ def main() :
 
         
         # move back ground according to player poss
-        offx = - player.pos.x / 8
-        offy = - player.pos.y / 8
+        offx = - player.pos.x * 0.125
+        offy = - player.pos.y * 0.125
         backgroundOffset += 3
         for x in xrange(-256, WIDTH, 256) :
             for y in xrange(-256, HEIGHT, 256) :
@@ -95,13 +102,22 @@ def main() :
         for laser in lasers :
             laser.update(dt, lasers)
 
-        player.update(keys, dt, lasers, miniBoss)
+        player.update(keys, dt, lasers, currentEnemy)
         
-        miniBoss.update(dt)
+        currentEnemy.update(dt)
         
         if(player.lifebar.lifes == 0) :
             running = False
             pass
+
+        if(currentEnemy.lifeBar.life <= 0) :
+            if(not bossAndAddQueue.empty()) :
+                currentEnemy = bossAndAddQueue.get()
+                pass
+            else :
+                print('you won !')
+                return True
+                #quit()
 
         # blit order is important
         for laser in lasers :
@@ -109,7 +125,7 @@ def main() :
         
         player.render(window)
 
-        miniBoss.render(window)
+        currentEnemy.render(window)
 
         for laserParts in laser_particles :
             laserParts.render(window)
@@ -233,20 +249,21 @@ while menu() :
     textTexture = createTextTexture('You lost', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
 
     coordTextStart = pygame.math.Vector2(-500, CENTERY)
+    coordMiddleText = pygame.math.Vector2(CENTERX - 75, CENTERY)
 
-    coordMiddleText = pygame.math.Vector2(WIDTH*0.5 - 65, CENTERY)
-
-    phaseOneDone = False
     coordText = coordTextStart
 
-    while (frameCount <= 2500 ) :
-        
+    while True :
+        clock.tick(FPS)
+
         for x in xrange(-256, WIDTH, 256) :
             for y in xrange(-256, HEIGHT, 256) :
                 drawTexture(window, background, (x, y))
         
-        if(coordText.length() >= 50 and (not phaseOneDone)) :
+        if((coordText - coordMiddleText).length() >= 3) :
             coordText = coordText.lerp(coordMiddleText, 0.05)
+        else :
+            break
 
         drawTexture(window, textTexture, coordText)
         pygame.display.flip()
