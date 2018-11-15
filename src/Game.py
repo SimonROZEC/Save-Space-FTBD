@@ -15,7 +15,7 @@ clock = pygame.time.Clock()
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space Shooter")
 
-from LoadImages import *
+from Textures import *
 
 from Player import *
 from MiniBoss import *
@@ -29,7 +29,7 @@ keys = {
     'fire' : False
 }
 
-background = images['BACKGROUND']
+background = textures['BACKGROUND']
 
 def main() :
 
