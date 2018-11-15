@@ -39,7 +39,7 @@ def main() :
     lasers = []
 
     player = Player()
-    miniBoss = MiniBoss(lasers)
+    miniBoss = MiniBoss(lasers, player)
     
     running = True
 

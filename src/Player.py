@@ -49,6 +49,11 @@ class Player(pygame.sprite.Sprite):
         self.time = 0
         self.scale = 1
 
+    def hit(self) :
+        if self.invulframe <= 0 :
+            self.lifebar.remove_life()
+            self.invulframe = 30 # duree de la frame d'invulnerabilite
+
     def update(self, keys, dt, lasers, boss) :
         self.time += 0.5
 
@@ -89,9 +94,7 @@ class Player(pygame.sprite.Sprite):
 
                 force.scale_to_length(2)
                 self.acc += force
-                if self.invulframe <= 0 :
-                    self.lifebar.remove_life()
-                    self.invulframe = 30 # duree de la frame d'invulnerabilite
+                self.hit()
 
         # laser collision
         for laser in lasers :
@@ -100,7 +103,7 @@ class Player(pygame.sprite.Sprite):
                 break
 
             if self.collider.collides(laser.collider) : #collision
-                self.lifebar.remove_life()
+                self.hit()
                 laser.destroy(lasers)
 
 
