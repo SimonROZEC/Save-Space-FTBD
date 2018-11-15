@@ -147,7 +147,7 @@ def startAnim(player) :
         pygame.display.flip()
 
         # process event so it dont freeze
-        pygame.event.get()
+        #pygame.event.get()
 
         framecount += 1
 
@@ -156,7 +156,7 @@ def menu() :
     framecount = 0
     background = textures['BACKGROUND']
 
-    textTexture = createTextTexture('Press space to start', './res/Fonts/kenvector_future_thin.ttf', 20, (0, 0, 0))
+    textTexture = createTextTexture('Press space to start', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
 
     player = Player(False)
 
@@ -174,17 +174,19 @@ def menu() :
             if event.type == pygame.QUIT :
                 return
             elif event.type == pygame.KEYDOWN :
-                if event.key == pygame.K_SPACE :
-                    startAnim(player)
-                    if (not main()) :
-                        return False
+                if event.key == pygame.K_SPACE :   
+                    startAnim(player)              
+                    if (main()) :
+                        print('menu')
+                        return True 
                     else :
-                        return True
+                        print('quit')
+                        return False
 
         player.render(window)
 
         if(framecount < 30) :
-            drawTexture(window, textTexture, (WIDTH*0.5-120, HEIGHT*0.7))
+            drawTexture(window, textTexture, (WIDTH*0.5-180, HEIGHT*0.7))
         elif (framecount < 60) :
             pass
         else :
@@ -195,10 +197,29 @@ def menu() :
         framecount += 1
 
 while menu() :
+    frameCount = 0
+
     background = textures['BACKGROUND']
+    textTexture = createTextTexture('You lost', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
 
-    textTexture = createTextTexture('You lost', './res/Fonts/kenvector_future_thin.ttf', 20, (0, 0, 0))
+    coordTextStart = pygame.math.Vector2(-500, CENTERY)
 
-    for x in xrange(-256, WIDTH, 256) :
-        for y in xrange(-256, HEIGHT, 256) :
-            window.blit(background, (x, y))
+    coordMiddleText = pygame.math.Vector2(WIDTH*0.5 - 65, CENTERY)
+
+    phaseOneDone = False
+    coordText = coordTextStart
+
+    while (frameCount <= 2500 ) :
+        
+        for x in xrange(-256, WIDTH, 256) :
+            for y in xrange(-256, HEIGHT, 256) :
+                drawTexture(window, background, (x, y))
+        
+        if(coordText.length() >= 50 and (not phaseOneDone)) :
+            coordText = coordText.lerp(coordMiddleText, 0.05)
+
+
+        drawTexture(window, textTexture, coordText)
+        pygame.display.flip()
+
+        frameCount += 1
