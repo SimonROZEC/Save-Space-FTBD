@@ -1,10 +1,19 @@
 import pygame
 from Player import *
+from Boss import *
+from Laser import *
 
-WIDTH = 400
+try:
+    xrange
+except NameError:
+    xrange = range
+
+WIDTH = 600
 HEIGHT = 800
+FPS = 60
 
 pygame.init()
+clock = pygame.time.Clock()
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Space Shooter")
@@ -17,14 +26,20 @@ keys = {
     'fire' : False
 }
 
-background = pygame.image.load('../res/Images/Background/blue.png')
+background = pygame.image.load('./res/Images/Background/darkPurple.png').convert()
 
 def main() :
     p = Player()
+    b = Boss()
     
+    lasers = []
+
     running = True
+    offset = 0
 
     while running :
+        dt = clock.tick(FPS)
+
         for event in pygame.event.get() :
             if event.type == pygame.QUIT :
                 running = False
@@ -37,6 +52,8 @@ def main() :
                     keys['left'] = True
                 elif event.key == pygame.K_RIGHT :
                     keys['right'] = True
+                elif event.key == pygame.K_a :
+                    keys['fire'] = True
             elif event.type == pygame.KEYUP :
                 if event.key == pygame.K_UP :
                     keys['up'] = False
@@ -46,14 +63,29 @@ def main() :
                     keys['left'] = False
                 elif event.key == pygame.K_RIGHT :
                     keys['right'] = False
+                elif event.key == pygame.K_a :
+                    keys['fire'] = False
 
+        offset += 2
+        offx = - p.pos.x / 8
+        offy = - p.pos.y / 8
+        for x in xrange(-256, WIDTH, 256) :
+            for y in xrange(-256, HEIGHT, 256) :
+                window.blit(background, (x+offx, y+offset%256))
 
-        for x in xrange(0, WIDTH, 256) :
-            for y in xrange(0, HEIGHT, 256) :
-                window.blit(background, (x, y))
+        for l in lasers :
+            l.update(dt, lasers)
+            l.render(window)
 
-        p.update(keys)
+        p.update(keys, dt, lasers, b)
         p.render(window)
+        
+        b.update(dt, lasers)
+        b.render(window)
+
+        for li in laser_particles :
+            li.render(window)
+
         pygame.display.flip()
 
 main()
