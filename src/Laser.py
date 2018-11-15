@@ -7,7 +7,7 @@ from random import *
 from Collider import *
 from Textures import *
 
-debug = True
+debug = False
 
 laser_particles = []
 

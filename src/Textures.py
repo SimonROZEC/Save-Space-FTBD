@@ -25,7 +25,7 @@ texturesOffsets = {
     'PLAYER_LIFE_ICON' :        (0, 0),
     'BACKGROUND' :              (128, 128),
     'MINIBOSS_SHIP' :           (80, 60),
-    'BOSS_SHIP' :               (0, 0),
+    'BOSS_SHIP' :               (128, 113),
 }
 
 def drawTexture(window, texture, posXY) :

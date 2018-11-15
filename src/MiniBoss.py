@@ -11,12 +11,12 @@ from Textures import *
 
 debug = False
 
-OFFSET_LASER = pygame.math.Vector2(72, 64)
+OFFSET_LASER = pygame.math.Vector2(0, 20)
 
 class BossState:
-    def __init__(self, boss, prepare, update, end, render) :
+    def __init__(self, boss, prepare, update, end, render, init = None) :
         self.boss = boss
-
+        
         self.p = prepare # update preparation du boss pour commencer l'etat + condition de fin de preparation
         
         self.u = update # mise a jour du boss pour un etat specifique
@@ -26,6 +26,9 @@ class BossState:
 
         self.time = 0
         self.prepared = False # le boss a termine la phase de preparation de son etat
+        if not init == None :
+            init(self, boss)
+
         
         
 
@@ -49,7 +52,7 @@ class MiniBoss(pygame.sprite.Sprite):
 
         self.type = 'MINIBOSS'
 
-        self.pos = pygame.math.Vector2(300-80, -120)
+        self.pos = pygame.math.Vector2(CENTERX, -10)
         self.vel = pygame.math.Vector2(0, 0)
         self.acc = pygame.math.Vector2(0, 0)
         self.image = textures['MINIBOSS_SHIP']
@@ -57,9 +60,9 @@ class MiniBoss(pygame.sprite.Sprite):
         self.scale = 1
 
         self.colliders = [
-            Collider(self, 24, pygame.math.Vector2(30, 80)),
-            Collider(self, 24, pygame.math.Vector2(130, 80)),
-            Collider(self, 64, pygame.math.Vector2(80, 30))
+            Collider(self, 24, pygame.math.Vector2(-50, 20)),
+            Collider(self, 24, pygame.math.Vector2(50, 20)),
+            Collider(self, 64, pygame.math.Vector2(0, -30))
         ]
 
         self.states = states(self)
@@ -88,12 +91,14 @@ class MiniBoss(pygame.sprite.Sprite):
             collider = laser.collider
             for col in self.colliders :
                 if laser.owner.type == 'PLAYER' and col.collides(collider) : #collision
-                    self.lifeBar.remove_life(laser.lifetime / 2)
+                    self.lifeBar.remove_life(laser.lifetime / 8)
                     laser.destroy(self.lasers)
                     break
 
     def render(self, window) :
-        window.blit(self.image, self.pos)
+        self.state.render(window)
+        window.blit(self.image, self.pos-texturesOffsets['MINIBOSS_SHIP'])
+        
         self.lifeBar.render(window)
         if debug :
             for collider in self.colliders :
