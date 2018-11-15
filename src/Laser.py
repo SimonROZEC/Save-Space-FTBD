@@ -1,10 +1,11 @@
 import pygame
+from globaldefines import *
+
 from math import *
 from random import *
 
 from Collider import *
-
-from LoadImages import *
+from Textures import *
 
 debug = True
 
@@ -15,9 +16,9 @@ class LaserImpact(pygame.sprite.Sprite):
         pygame.sprite.Sprite.__init__(self)
         self.pos = pos
         if owner.owner.type == 'PLAYER' :
-            self.frames = images['LASER_PLAYER_EXPLOSION']
+            self.frames = textures['LASER_PLAYER_EXPLOSION']
         else :
-            self.frames = images['LASER_ENEMY_EXPLOSION']
+            self.frames = textures['LASER_ENEMY_EXPLOSION']
         self.anim = 0
         r = randint(5, 15)
         self.maxlife = r
@@ -46,9 +47,9 @@ class Laser(pygame.sprite.Sprite):
         self.angle = degrees(-dir) - 90
         self.vel = pygame.math.Vector2(speed * cos(dir), speed * sin(dir))
         if owner.type == 'PLAYER' :
-            self.frames = images['LASER_PLAYER']
+            self.frames = textures['LASER_PLAYER']
         else :
-            self.frames = images['LASER_ENEMY']
+            self.frames = textures['LASER_ENEMY']
         
         self.anim = 0
         self.scalefactor = scale

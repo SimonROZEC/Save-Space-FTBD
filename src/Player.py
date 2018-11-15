@@ -1,40 +1,43 @@
 import pygame
+from globaldefines import *
+
 from math import *
 from Laser import *
 from Collider import *
-from LoadImages import *
+from Textures import *
 
-debug = False
+debug = True
 
 OFFSET_LASER_LEFT = pygame.math.Vector2(16, 20)
 OFFSET_LASER_RIGHT = pygame.math.Vector2(83-16, 20)
 
 class PlayerLifebar(pygame.sprite.Sprite):
-    def __init__(self) :
+    def __init__(self, lifeBarEnabeled) :
         pygame.sprite.Sprite.__init__(self)
         self.lifes = 5
-        self.icon = images['PLAYER_LIFE_ICON']
+        self.icon = textures['PLAYER_LIFE_ICON']
+        self.lifeBarEnabeled = lifeBarEnabeled
 
     def remove_life(self) :
         if self.lifes > 0 :
             self.lifes -= 1
 
     def render(self, window) :
-        for i in range(self.lifes) :
-            window.blit(self.icon, (10 + i*36, 800 - 40))
+        if(self.lifeBarEnabeled) :
+            for i in range(self.lifes) :
+                window.blit(self.icon, (10 + i*36, 800 - 40))
 
 class Player(pygame.sprite.Sprite):
-    def __init__(self) :
+    def __init__(self, hasLifeBar = True) :
         pygame.sprite.Sprite.__init__(self)
-
         self.type = 'PLAYER'
 
-        self.pos = pygame.math.Vector2(400, 300)
+        self.pos = pygame.math.Vector2(CENTERX, CENTERY) - texturesOffsets['PLAYER_SHIP']
         self.vel = pygame.math.Vector2(0, 0)
         self.acc = pygame.math.Vector2(0, 0)
 
-        self.image = images['PLAYER_SHIP']
-        self.fire = images['PLAYER_THRUSTER']
+        self.image = textures['PLAYER_SHIP']
+        self.fire = textures['PLAYER_THRUSTER']
         self.anim = 0
 
         self.firecd = 0
@@ -42,7 +45,7 @@ class Player(pygame.sprite.Sprite):
 
         self.collider = Collider(self, 32, pygame.math.Vector2(50, 40))
 
-        self.lifebar = PlayerLifebar()
+        self.lifebar = PlayerLifebar(hasLifeBar)
         self.time = 0
         self.scale = 1
 
@@ -92,21 +95,20 @@ class Player(pygame.sprite.Sprite):
 
         # laser collision
         for laser in lasers :
-        
-            if not laser.owner.type == 'MINIBOSS' :
+            #tous les lasers qui sont pas ceux du joueur
+            if(laser.owner.type == 'PLAYER'):
                 break
 
-            collider = laser.collider
-            if self.collider.collides(collider) : #collision
+            if self.collider.collides(laser.collider) : #collision
+                self.lifebar.remove_life()
                 laser.destroy(lasers)
 
-        self.invulframe -= 1
 
         self.vel += self.acc * dt
 
         # limit player speed
-        if self.vel.length() > 20 :
-            self.vel.scale_to_length(20)
+        if self.vel.length() > 15 :
+            self.vel.scale_to_length(15)
 
         self.pos += self.vel
 
@@ -121,6 +123,8 @@ class Player(pygame.sprite.Sprite):
             l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, -pi*0.5+dec, speed, 100)
             lasers.append(l2)
             lasers.append(l1)
+
+        self.invulframe -= 1
         self.firecd -= 1
 
     def render(self, window) :

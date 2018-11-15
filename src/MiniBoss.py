@@ -1,10 +1,12 @@
 import pygame
+from globaldefines import *
+
 from math import *
 from Laser import *
 from Collider import *
-from LoadImages import *
+from Textures import *
 
-debug = False
+debug = True
 
 OFFSET_LASER = pygame.math.Vector2(72, 64)
 
@@ -38,10 +40,10 @@ class MiniBoss(pygame.sprite.Sprite):
 
         self.type = 'MINIBOSS'
 
-        self.pos = pygame.math.Vector2(150 * 0.5, 200)
+        self.pos = pygame.math.Vector2(300-80, -120)
         self.vel = pygame.math.Vector2(0, 0)
         self.acc = pygame.math.Vector2(0, 0)
-        self.image = images['MINIBOSS_SHIP']
+        self.image = textures['MINIBOSS_SHIP']
 
         self.scale = 1
 

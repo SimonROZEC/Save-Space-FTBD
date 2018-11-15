@@ -1,3 +1,3 @@
 #!/bin/bash
 
-pip install pygame;
+pip install pygame --user;

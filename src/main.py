@@ -1,0 +1,204 @@
+#imports
+import pygame
+from globaldefines import *
+
+# init sdl
+pygame.init()
+window = pygame.display.set_mode((WIDTH, HEIGHT))
+
+clock = pygame.time.Clock()
+
+# textures 
+from Textures import *
+
+#strange aliases
+try:
+    xrange
+except NameError:
+    xrange = range
+
+# struct
+keys = {
+    'up'   : False,
+    'down' : False,
+    'left' : False,
+    'right': False,
+    'fire' : False
+}
+
+from Player import *
+from MiniBoss import *
+from Laser import *
+
+
+##
+# Return false if game was closed py player, true if player lost
+#
+def main() :   
+    pygame.display.set_caption("-#- Space Shooter -#-")
+
+    lasers = []
+
+    player = Player()
+    miniBoss = MiniBoss(lasers)
+    
+    running = True
+
+    backgroundOffset = 0
+    background = textures['BACKGROUND']
+
+    while running :
+        # time since last frame, should be 1/FPS
+        # or less of the game is lagging
+        dt = clock.tick(FPS)
+
+        for event in pygame.event.get() :
+            if event.type == pygame.QUIT :
+                return False
+
+            elif event.type == pygame.KEYDOWN :
+                if event.key == pygame.K_UP :
+                    keys['up'] = True
+                elif event.key == pygame.K_DOWN :
+                    keys['down'] = True
+                elif event.key == pygame.K_LEFT :
+                    keys['left'] = True
+                elif event.key == pygame.K_RIGHT :
+                    keys['right'] = True
+                elif event.key == pygame.K_a :
+                    keys['fire'] = True
+
+            elif event.type == pygame.KEYUP :
+                if event.key == pygame.K_UP :
+                    keys['up'] = False
+                elif event.key == pygame.K_DOWN :
+                    keys['down'] = False
+                elif event.key == pygame.K_LEFT :
+                    keys['left'] = False
+                elif event.key == pygame.K_RIGHT :
+                    keys['right'] = False
+                elif event.key == pygame.K_a :
+                    keys['fire'] = False
+
+        
+        # move back ground according to player poss
+        offx = - player.pos.x / 8
+        offy = - player.pos.y / 8
+        backgroundOffset += 3
+        for x in xrange(-256, WIDTH, 256) :
+            for y in xrange(-256, HEIGHT, 256) :
+                window.blit(background, (x+offx, y+backgroundOffset%256))
+
+        # for each laser check if should die
+        for laser in lasers :
+            laser.update(dt, lasers)
+
+        player.update(keys, dt, lasers, miniBoss)
+        
+        miniBoss.update(dt)
+        
+        if(player.lifebar.lifes == 0) :
+            running = False
+            pass
+
+        # blit order is important
+        player.render(window)
+
+        miniBoss.render(window)
+
+        for laser in lasers :
+            laser.render(window)
+
+        for laserParts in laser_particles :
+            laserParts.render(window)
+      
+        # frame buffer ?
+        pygame.display.flip()
+    return True
+
+
+def startAnim(player) :
+    coordsBack = pygame.math.Vector2(CENTERX, CENTERY + 100) - texturesOffsets['PLAYER_SHIP']
+    coordsEnd = pygame.math.Vector2(CENTERX, - 1000) - texturesOffsets['PLAYER_SHIP']
+    background = textures['BACKGROUND']
+
+    framecount = 0
+    currentCoord = coordsBack
+
+    while True :
+        clock.tick(FPS)
+
+        if not ((currentCoord - player.pos).length() < 10) :
+            player.pos = player.pos.lerp(currentCoord, 0.05)
+        else :
+            currentCoord = coordsEnd
+
+        if((coordsEnd - player.pos).length() < 10) :
+            return
+
+        # move back ground according to player poss
+        offx = - sin(framecount*0.01) * 30
+
+        for x in xrange(-256, WIDTH, 256) :
+            for y in xrange(-256, HEIGHT, 256) :
+                window.blit(background, (x+offx, y+framecount%256))
+
+        player.render(window)
+        pygame.display.flip()
+
+        # process event so it dont freeze
+        pygame.event.get()
+
+        framecount += 1
+
+## Menu
+def menu() :
+    framecount = 0
+    background = textures['BACKGROUND']
+
+    textTexture = createTextTexture('Press space to start', './res/Fonts/kenvector_future_thin.ttf', 20, (0, 0, 0))
+
+    player = Player(False)
+
+    while True :
+        clock.tick(FPS)
+        
+        # move back ground according to player poss
+        offx = - sin(framecount*0.01) * 30
+
+        for x in xrange(-256, WIDTH, 256) :
+            for y in xrange(-256, HEIGHT, 256) :
+                window.blit(background, (x+offx, y+framecount%256))
+
+        for event in pygame.event.get() :
+            if event.type == pygame.QUIT :
+                return
+            elif event.type == pygame.KEYDOWN :
+                if event.key == pygame.K_SPACE :
+                    startAnim(player)
+                    if (not main()) :
+                        return False
+                    else :
+                        return True
+
+        player.render(window)
+
+        if(framecount < 30) :
+            drawTexture(window, textTexture, (WIDTH*0.5-120, HEIGHT*0.7))
+        elif (framecount < 60) :
+            pass
+        else :
+            framecount = 0
+
+        pygame.display.flip()
+
+        framecount += 1
+
+while menu() :
+    background = textures['BACKGROUND']
+
+    textTexture = createTextTexture('You lost', './res/Fonts/kenvector_future_thin.ttf', 20, (0, 0, 0))
+
+    for x in xrange(-256, WIDTH, 256) :
+        for y in xrange(-256, HEIGHT, 256) :
+            window.blit(background, (x, y))
