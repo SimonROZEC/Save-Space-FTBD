@@ -19,13 +19,7 @@ except NameError:
     xrange = range
 
 # struct
-keys = {
-    'up'   : False,
-    'down' : False,
-    'left' : False,
-    'right': False,
-    'fire' : False
-}
+keys = None
 
 from Player import *
 from MiniBoss import *
@@ -37,6 +31,15 @@ from Laser import *
 #
 def main() :   
     lasers = []
+
+    # struct
+    keys = {
+        'up'   : False,
+        'down' : False,
+        'left' : False,
+        'right': False,
+        'fire' : False
+    }
 
     player = Player()
     miniBoss = MiniBoss(lasers, player)
@@ -154,22 +157,47 @@ def startAnim(player) :
 
 ## Menu
 def menu() :
-    framecount = 0
     background = textures['BACKGROUND']
 
     textTexture = createTextTexture('Press space to start', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
 
     player = Player(False)
+    startCoord = pygame.math.Vector2(CENTERX, HEIGHT+100) - texturesOffsets['PLAYER_SHIP']
+    player.pos = startCoord
 
+    goalCoord = pygame.math.Vector2(CENTERX, CENTERY) - texturesOffsets['PLAYER_SHIP']
+
+    while True :
+        clock.tick(FPS)
+         
+        for x in xrange(-256, WIDTH, 256) :
+            for y in xrange(-256, HEIGHT, 256) :
+                window.blit(background, (x, y))
+
+        if not ((goalCoord - player.pos).length() < 10) :
+            player.pos = player.pos.lerp(goalCoord, 0.05)
+        else :
+            break       
+
+        for event in pygame.event.get() :
+            if event.type == pygame.QUIT :
+                return
+
+        player.render(window)
+
+        pygame.display.flip()
+
+    framecount = 0
+    frameCounter = 0
     while True :
         clock.tick(FPS)
         
         # move back ground according to player poss
-        offx = - sin(framecount*0.01) * 30
+        offx = - sin(frameCounter*0.01) * 30
 
         for x in xrange(-256, WIDTH, 256) :
             for y in xrange(-256, HEIGHT, 256) :
-                window.blit(background, (x+offx, y+framecount%256))
+                window.blit(background, (x+offx, y+frameCounter%256))
 
         for event in pygame.event.get() :
             if event.type == pygame.QUIT :
@@ -196,6 +224,7 @@ def menu() :
         pygame.display.flip()
 
         framecount += 1
+        frameCounter += 1
 
 while menu() :
     frameCount = 0
