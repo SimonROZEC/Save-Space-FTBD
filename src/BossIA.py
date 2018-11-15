@@ -4,13 +4,15 @@ from random import *
 from Boss import BossState
 
 def start_prepare(self, boss) :
-    self.prepared = True
+    boss.pos = boss.pos.lerp((75, 16), 0.05)
+    if ((75, 16)-boss.pos).length() < 1 :
+        self.prepared = True
     pass
 
 def start_update(self, boss) :
     boss.vel.x = sin(float(self.time) / 100.0)
     boss.vel.y = cos(float(self.time) / 50.0)
-    if self.time % 10 == 0:
+    if self.time % 60 == 0:
         boss.fire()
         
     pass

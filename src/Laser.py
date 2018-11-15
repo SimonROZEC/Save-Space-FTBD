@@ -19,7 +19,7 @@ class LaserImpact(pygame.sprite.Sprite):
         else :
             self.frames = images['LASER_ENEMY_EXPLOSION']
         self.anim = 0
-        r = randint(10, 30)
+        r = randint(5, 15)
         self.maxlife = r
         self.lifetime = self.maxlife
 
@@ -31,7 +31,7 @@ class LaserImpact(pygame.sprite.Sprite):
         self.anim = self.anim % len(self.frames)
 
         self.lifetime -= 1
-        window.blit(pygame.transform.rotozoom(self.frames[int(self.anim)], 0, (float(self.lifetime)/float(self.maxlife) + self.scale)),self.pos-(19*self.scale, 19*self.scale))
+        window.blit(pygame.transform.rotozoom(self.frames[int(self.anim)], 0, (float(self.lifetime)/float(self.maxlife) + self.scale)),self.pos-(24*self.scale, 24*self.scale))
 
 
 class Laser(pygame.sprite.Sprite):

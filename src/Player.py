@@ -6,8 +6,8 @@ from LoadImages import *
 
 debug = False
 
-OFFSET_LASER_LEFT = pygame.math.Vector2(16, 48)
-OFFSET_LASER_RIGHT = pygame.math.Vector2(83-16, 48)
+OFFSET_LASER_LEFT = pygame.math.Vector2(16, 20)
+OFFSET_LASER_RIGHT = pygame.math.Vector2(83-16, 20)
 
 class PlayerLifebar(pygame.sprite.Sprite):
     def __init__(self) :
@@ -108,12 +108,13 @@ class Player(pygame.sprite.Sprite):
 
         # create lasers
         if keys['fire'] and self.firecd <= 0:
-            self.firecd = 0
+            self.firecd = 8
             speed = 1
             if self.vel.y < 0 :
                 speed += -self.vel.y * 0.05
-            l1 = Laser(self, self.pos + OFFSET_LASER_LEFT, -pi*0.5, speed, 20)
-            l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, -pi*0.5, speed, 20)
+            dec = 0.02 * self.vel.x
+            l1 = Laser(self, self.pos + OFFSET_LASER_LEFT, -pi*0.5+dec, speed, 15)
+            l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, -pi*0.5+dec, speed, 15)
             lasers.append(l2)
             lasers.append(l1)
         self.firecd -= 1
