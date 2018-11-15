@@ -1,8 +1,8 @@
 import pygame
 from Player import *
 
-WIDTH = 800
-HEIGHT = 600
+WIDTH = 400
+HEIGHT = 800
 
 pygame.init()
 
@@ -17,7 +17,7 @@ keys = {
     'fire' : False
 }
 
-background = pygame.image.load('./Images/Background/blue.png')
+background = pygame.image.load('../res/Images/Background/blue.png')
 
 def main() :
     p = Player()
