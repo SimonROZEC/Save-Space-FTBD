@@ -44,6 +44,7 @@ class Player(pygame.sprite.Sprite):
 
         self.lifebar = PlayerLifebar()
         self.time = 0
+        self.scale = 1
 
     def update(self, keys, dt, lasers, boss) :
         self.time += 0.5
@@ -77,7 +78,12 @@ class Player(pygame.sprite.Sprite):
         # boss collision 
         for c in boss.colliders :
             if self.collider.collides(c) :
-                force = (self.pos - (boss.pos+(128, 20)))
+                force = self.pos - boss.pos
+                if boss.type == 'MINIBOSS' :
+                    force -= (80, 20)
+                else :
+                    force -= (128, 20)
+
                 force.scale_to_length(2)
                 self.acc += force
                 if self.invulframe <= 0 :
@@ -86,10 +92,8 @@ class Player(pygame.sprite.Sprite):
 
         # laser collision
         for laser in lasers :
-            
-            print(laser.owner.type)
-
-            if not laser.owner.type == 'BOSS' :
+        
+            if not laser.owner.type == 'MINIBOSS' :
                 break
 
             collider = laser.collider
@@ -113,8 +117,8 @@ class Player(pygame.sprite.Sprite):
             if self.vel.y < 0 :
                 speed += -self.vel.y * 0.05
             dec = 0.02 * self.vel.x
-            l1 = Laser(self, self.pos + OFFSET_LASER_LEFT, -pi*0.5+dec, speed, 15)
-            l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, -pi*0.5+dec, speed, 15)
+            l1 = Laser(self, self.pos + OFFSET_LASER_LEFT, -pi*0.5+dec, speed,100)
+            l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, -pi*0.5+dec, speed, 100)
             lasers.append(l2)
             lasers.append(l1)
         self.firecd -= 1

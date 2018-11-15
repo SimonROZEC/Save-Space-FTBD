@@ -6,7 +6,7 @@ from Collider import *
 
 from LoadImages import *
 
-debug = False
+debug = True
 
 laser_particles = []
 
@@ -31,16 +31,17 @@ class LaserImpact(pygame.sprite.Sprite):
         self.anim = self.anim % len(self.frames)
 
         self.lifetime -= 1
-        window.blit(pygame.transform.rotozoom(self.frames[int(self.anim)], 0, (float(self.lifetime)/float(self.maxlife) + self.scale)),self.pos-(24*self.scale, 24*self.scale))
+        scale = float(self.lifetime)/float(self.maxlife) + self.scale
+        window.blit(pygame.transform.rotozoom(self.frames[int(self.anim)], 0, scale),self.pos-(24*scale, 24*scale))
 
 
 class Laser(pygame.sprite.Sprite):
-    def __init__(self, owner, pos, dir, speed, lifetime = 60) :
+    def __init__(self, owner, pos, dir, speed, lifetime = 60, scale = 1, precision = 0.05) :
         pygame.sprite.Sprite.__init__(self)
         
         self.owner = owner
         self.pos = pos
-        precision = uniform(-0.05, 0.05)
+        precision = uniform(-precision, precision)
         dir += precision
         self.angle = degrees(-dir) - 90
         self.vel = pygame.math.Vector2(speed * cos(dir), speed * sin(dir))
@@ -50,12 +51,14 @@ class Laser(pygame.sprite.Sprite):
             self.frames = images['LASER_ENEMY']
         
         self.anim = 0
-        
+        self.scalefactor = scale
+        self.scale = scale
+
         r = randint(0, 15)
         self.maxlife = lifetime + r
         self.lifetime = self.maxlife
 
-        self.collider = Collider(self, 4, pygame.math.Vector2(4, 4))
+        self.collider = Collider(self, 4, pygame.math.Vector2(0, 0))
 
     def update(self, dt, lasers) :
         
@@ -64,13 +67,15 @@ class Laser(pygame.sprite.Sprite):
 
         self.lifetime -= 1
 
-        if self.anim < 3 :
-            self.anim += 0.25
+        if self.anim < len(self.frames) - 1 :
+            self.anim += 1
 
         self.pos += self.vel * dt
 
     def render(self, window) :
-        window.blit(pygame.transform.rotozoom(self.frames[int(self.anim)], self.angle, (float(self.lifetime)/float(self.maxlife))),self.pos)
+        self.scale = (float(self.lifetime)/float(self.maxlife)) * self.scalefactor
+        sf = pygame.transform.rotozoom(self.frames[int(self.anim)], self.angle, self.scale)
+        window.blit(sf ,self.pos - (sf.get_width() * 0.5, sf.get_height() * 0.5))
         if debug : 
             self.collider.render(window)
 

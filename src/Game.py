@@ -36,7 +36,7 @@ def main() :
     lasers = []
 
     p = Player()
-    b = Boss(lasers)
+    b = MiniBoss(lasers)
     
 
 

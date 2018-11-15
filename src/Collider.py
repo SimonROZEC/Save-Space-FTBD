@@ -11,9 +11,9 @@ class Collider :
         self.offset = offset
 
     def collides(self, other) :
-        sp = self.parent.pos + self.offset
-        op = other.parent.pos + other.offset
-        return self.radius + other.radius > hypot(sp.x-op.x, sp.y-op.y)
+        sp = self.parent.pos + self.offset * self.parent.scale
+        op = other.parent.pos + other.offset * other.parent.scale
+        return self.radius *self.parent.scale + other.radius * other.parent.scale > hypot(sp.x-op.x, sp.y-op.y)
 
     def render(self, window) :
-        pygame.draw.circle(window, collider_color, (int(self.parent.pos.x + self.offset.x), int(self.parent.pos.y + self.offset.y)), int(self.radius), 0)
+        pygame.draw.circle(window, collider_color, (int(self.parent.pos.x + self.offset.x * self.parent.scale ), int(self.parent.pos.y + self.offset.y * self.parent.scale)), int(self.radius * self.parent.scale), 0)

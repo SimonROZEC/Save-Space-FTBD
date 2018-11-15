@@ -1,8 +1,8 @@
 import pygame
 
 images = {
-    'LASER_PLAYER': [pygame.image.load('./res/Images/Lasers/laserGreen' + str(i) + '.png').convert_alpha() for i in range(0, 4)],
-    'LASER_ENEMY': [pygame.image.load('./res/Images/Lasers/laserRed' + str(i) + '.png').convert_alpha() for i in range(0, 4)],
+    'LASER_PLAYER': [pygame.image.load('./res/Images/Lasers/laserGreen' + str(i) + '.png').convert_alpha() for i in range(3, 4)],
+    'LASER_ENEMY': [pygame.image.load('./res/Images/Lasers/laserRed' + str(i) + '.png').convert_alpha() for i in range(3, 4)],
     'LASER_PLAYER_EXPLOSION' : [pygame.image.load('./res/Images/Lasers/expGreen' + str(i) + '.png').convert_alpha() for i in range(1, 5)],
     'LASER_ENEMY_EXPLOSION' : [pygame.image.load('./res/Images/Lasers/laserRed' + str(i) + '.png').convert_alpha() for i in range(21, 25)],
     'PLAYER_SHIP' : pygame.image.load('./res/Images/playerShip1_green.png').convert_alpha(),
