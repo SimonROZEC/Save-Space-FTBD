@@ -78,7 +78,7 @@ class Player(pygame.sprite.Sprite):
                 self.acc += force
                 if self.invulframe <= 0 :
                     self.lifebar.remove_life()
-                    self.invulframe = 30 # durée de la frame d'invulnérabilité
+                    self.invulframe = 30 # duree de la frame d'invulnerabilite
 
         self.invulframe -= 1
 
