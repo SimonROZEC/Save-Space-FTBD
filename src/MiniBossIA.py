@@ -64,7 +64,7 @@ def phase1_end(self, boss) :
 # Second state, pos boss onto the right coords
 def phase2_prepare(self, boss) :
     # boss.pos = boss.pos.lerp((CENTERX, 400), 0.1)
-    boss.target_point((CENTERX, 400), 0.05)
+    boss.target_point((CENTERX, 400), 0.1)
     d = boss.dist_to_point((CENTERX, 400))
     print('dist : ' + str(d))
     if d < 10 :

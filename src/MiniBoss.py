@@ -88,7 +88,7 @@ class MiniBoss(pygame.sprite.Sprite):
             collider = laser.collider
             for col in self.colliders :
                 if laser.owner.type == 'PLAYER' and col.collides(collider) : #collision
-                    self.lifeBar.remove_life(laser.lifetime / 8)
+                    self.lifeBar.remove_life(laser.lifetime / 1)
                     laser.destroy(self.lasers)
                     break
 
@@ -103,13 +103,14 @@ class MiniBoss(pygame.sprite.Sprite):
     
     # méthode sécurisé pour target un point
     def target_point(self, target, speed) :
-        d = (target - self.pos)
-        d.scale_to_length(0.1)
-        prev = self.pos + (0, 0)
-        
-        self.pos = self.pos.lerp(target, speed)
-        if self.dist_to_point(prev) < 0.1 :
-            self.pos += d
+        d = (target - self.pos) * speed
+        if d.length() < 2 :
+            if self.dist_to_point(target) < 2 :
+                self.pos = target
+                return
+            else :
+                d.scale_to_length(2)
+        self.pos += d
 
     def dist_to_point(self, target) :
         return (target-self.pos).length()
