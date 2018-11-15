@@ -1,7 +1,7 @@
 import pygame
 from math import *
 from random import *
-from Boss import BossState
+from MiniBoss import BossState
 
 def start_prepare(self, boss) :
     boss.pos = boss.pos.lerp((75, 16), 0.05)

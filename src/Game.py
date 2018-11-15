@@ -18,7 +18,7 @@ pygame.display.set_caption("Space Shooter")
 from LoadImages import *
 
 from Player import *
-from Boss import *
+from MiniBoss import *
 from Laser import *
 
 keys = {

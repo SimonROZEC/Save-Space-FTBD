@@ -31,7 +31,7 @@ class BossState:
     def render(self, window):
         self.r(self, window)
 
-from BossIA import states
+from MiniBossIA import states
 
 class Boss(pygame.sprite.Sprite):
     def __init__(self, lasers) :
@@ -42,7 +42,7 @@ class Boss(pygame.sprite.Sprite):
         self.pos = pygame.math.Vector2(150 * 0.5, 200)
         self.vel = pygame.math.Vector2(0, 0)
         self.acc = pygame.math.Vector2(0, 0)
-        self.image = images['BOSS_SHIP']
+        self.image = images['MINIBOSS_SHIP']
 
         self.colliders = [
             Collider(self, 48, pygame.math.Vector2(38, 150)),
