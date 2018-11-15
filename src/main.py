@@ -19,13 +19,7 @@ except NameError:
     xrange = range
 
 # struct
-keys = {
-    'up'   : False,
-    'down' : False,
-    'left' : False,
-    'right': False,
-    'fire' : False
-}
+keys = None
 
 from Player import *
 from MiniBoss import *
@@ -37,6 +31,15 @@ from Laser import *
 #
 def main() :   
     lasers = []
+
+    # struct
+    keys = {
+        'up'   : False,
+        'down' : False,
+        'left' : False,
+        'right': False,
+        'fire' : False
+    }
 
     player = Player()
     miniBoss = MiniBoss(lasers)
