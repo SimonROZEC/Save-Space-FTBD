@@ -101,12 +101,12 @@ def main() :
             pass
 
         # blit order is important
+        for laser in lasers :
+            laser.render(window)
+        
         player.render(window)
 
         miniBoss.render(window)
-
-        for laser in lasers :
-            laser.render(window)
 
         for laserParts in laser_particles :
             laserParts.render(window)

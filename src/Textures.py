@@ -16,8 +16,8 @@ textures = {
 
 #approx
 texturesOffsets = {
-    'LASER_PLAYER':             (0, 0),
-    'LASER_ENEMY':              (0, 0),
+    'LASER_PLAYER':             (4.5, 0),
+    'LASER_ENEMY':              (4.5, 0),
     'LASER_PLAYER_EXPLOSION' :  (5, 5),
     'LASER_ENEMY_EXPLOSION' :   (0, 0),
     'PLAYER_SHIP' :             (50, 38),

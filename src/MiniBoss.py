@@ -6,7 +6,7 @@ from Laser import *
 from Collider import *
 from Textures import *
 
-debug = True
+debug = False
 
 OFFSET_LASER = pygame.math.Vector2(72, 64)
 

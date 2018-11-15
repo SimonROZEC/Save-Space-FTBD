@@ -6,10 +6,10 @@ from Laser import *
 from Collider import *
 from Textures import *
 
-debug = True
+debug = False
 
-OFFSET_LASER_LEFT = pygame.math.Vector2(16, 20)
-OFFSET_LASER_RIGHT = pygame.math.Vector2(83-16, 20)
+OFFSET_LASER_LEFT = pygame.math.Vector2(24, 20)
+OFFSET_LASER_RIGHT = pygame.math.Vector2(99-24, 20)
 
 class PlayerLifebar(pygame.sprite.Sprite):
     def __init__(self, lifeBarEnabeled) :
