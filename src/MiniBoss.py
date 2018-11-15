@@ -29,9 +29,6 @@ class BossState:
         if not init == None :
             init(self, boss)
 
-        
-        
-
     def update(self):
         self.time += 1
         if not self.prepared :
@@ -103,4 +100,16 @@ class MiniBoss(pygame.sprite.Sprite):
         if debug :
             for collider in self.colliders :
                 collider.render(window)
+    
+    # méthode sécurisé pour target un point
+    def target_point(self, target, speed) :
+        d = (target - self.pos)
+        d.scale_to_length(0.1)
+        prev = self.pos + (0, 0)
         
+        self.pos = self.pos.lerp(target, speed)
+        if self.dist_to_point(prev) < 0.1 :
+            self.pos += d
+
+    def dist_to_point(self, target) :
+        return (target-self.pos).length()

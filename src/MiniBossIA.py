@@ -20,7 +20,7 @@ def start_prepare(self, boss) :
     #pass
 
 def start_update(self, boss) :
-    self.current_pos = self.current_pos.lerp(self.start_pos-(0, 20), 0.015)
+    self.current_pos = self.current_pos.lerp(self.start_pos-(0, 20), 0.03)
     #pass
 
 def start_render(self, window) :
@@ -39,7 +39,7 @@ def phase1_init(self, boss) :
     self.time = 0
 
 def phase1_prepare(self, boss) :
-    boss.pos = boss.pos.lerp((CENTERX, 120), 0.02)
+    boss.pos = boss.pos.lerp((CENTERX, 120), 0.03)
     if ((CENTERX, 120)-boss.pos).length() < 10 :
         self.prepared = True
     #pass
@@ -63,8 +63,11 @@ def phase1_end(self, boss) :
 #################################################################################################
 # Second state, pos boss onto the right coords
 def phase2_prepare(self, boss) :
-    boss.pos = boss.pos.lerp((CENTERX, 400), 0.1)
-    if ((CENTERX, 400)-boss.pos).length() < 10 :
+    # boss.pos = boss.pos.lerp((CENTERX, 400), 0.1)
+    boss.target_point((CENTERX, 400), 0.05)
+    d = boss.dist_to_point((CENTERX, 400))
+    print('dist : ' + str(d))
+    if d < 10 :
         print("ok" + str(self.time))
         self.prepared = True
     #pass
