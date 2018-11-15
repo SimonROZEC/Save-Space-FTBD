@@ -24,7 +24,7 @@ def start_render(self, window) :
     pass
 
 def start_end(self, boss) :
-    if boss.lifeBar.lifes * boss.lifeBar.maxLife <= 0.5 :
+    if boss.lifeBar.life * boss.lifeBar.maxLife <= 0.5 :
         boss.set_state('phase1')
     pass
 
