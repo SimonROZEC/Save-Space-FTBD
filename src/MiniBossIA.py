@@ -17,14 +17,16 @@ def start_update(self, boss) :
     boss.vel.x = sin(float(self.time) / 100.0)
     boss.vel.y = cos(float(self.time) / 50.0)
     if self.time % 20 == 0:
-        boss.fire((0, 0), 0.6)   
+        boss.fire((0, 0), 0.6)
     #pass
+
+def start_render(self, window) :
+    pass
 
 def start_end(self, boss) :
     pass
 
-def start_render(self, window) :
-    pass
+
 
 def states(boss) :
     return {

@@ -2,6 +2,9 @@ import pygame
 from globaldefines import *
 
 from math import *
+
+from BossLifeBar import *
+
 from Laser import *
 from Collider import *
 from Textures import *
@@ -13,19 +16,25 @@ OFFSET_LASER = pygame.math.Vector2(72, 64)
 class BossState:
     def __init__(self, boss, prepare, update, end, render) :
         self.boss = boss
+
         self.p = prepare # update preparation du boss pour commencer l'etat + condition de fin de preparation
+        
         self.u = update # mise a jour du boss pour un etat specifique
         self.r = render # affichage d'effets graphiques specifiques a l'etat
+
         self.e = end # condition de fin de l'etat et passage a l'etat suivant
+
         self.time = 0
         self.prepared = False # le boss a termine la phase de preparation de son etat
-    
+        
+        
+
     def update(self):
         self.time += 1
-        if self.prepared :
-            self.u(self, self.boss)
-        else :
+        if not self.prepared :
             self.p(self, self.boss)
+        else :
+            self.u(self, self.boss)
         
         self.e(self, self.boss)
 
@@ -57,6 +66,8 @@ class MiniBoss(pygame.sprite.Sprite):
         self.state = self.states['start']
 
         self.lasers = lasers
+
+        self.lifeBar = BossLifeBar(5000)
     
     def fire(self, target, precision = 0.05)  :
         laser = Laser(self, self.pos + OFFSET_LASER, pi*0.5, 0.5, 1000, 1.5, precision)
@@ -73,11 +84,13 @@ class MiniBoss(pygame.sprite.Sprite):
             collider = laser.collider
             for col in self.colliders :
                 if laser.owner.type == 'PLAYER' and col.collides(collider) : #collision
+                    self.lifeBar.remove_life(laser.lifetime)
                     laser.destroy(self.lasers)
                     break
 
     def render(self, window) :
         window.blit(self.image, self.pos)
+        self.lifeBar.render(window)
         if debug :
             for collider in self.colliders :
                 collider.render(window)
