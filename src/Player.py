@@ -63,7 +63,7 @@ class PlayerEnergybar(pygame.sprite.Sprite):
     def render(self, window) :
         self.restorecd -= 1
         partial = self.energy % 100
-        complete = self.energy / 100
+        complete = int(self.energy / 100)
         
         offset = WIDTH - 150 - 8
         if(self.energyBarEnabeled) :

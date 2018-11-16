@@ -6,18 +6,6 @@ from random import *
 from MiniBoss import BossState
 from Powerup import *
 
-# methode securise pour lerp un point
-def target_point(start, target, speed) :
-    d = (target - start) * speed
-    if d.length() < 2 :
-        if dist_to_point(start, target) < 2 :
-            return target
-        else :
-            d.scale_to_length(2)
-    return start + d
-
-def dist_to_point(start, target) :
-    return (target-start).length()
 
 # Scene setup
 def start_init(self, boss) :
@@ -92,8 +80,8 @@ def phase2_update(self, boss) :
         boss.fire((0, 0), 1)
     if self.time % 10 == 0:
         boss.fire((0, 0), 0.02)
-    if self.time % 60 == 0 :
-        boss.give_powerup((uniform(0, WIDTH), -34), get_random_type())
+    if self.time % 10 == 0 :
+        boss.give_powerup(boss.pos + (uniform(-400, 400), uniform(-400, 400)), get_random_type())
     #pass
 
 def phase2_render(self, window) :
