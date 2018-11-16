@@ -15,12 +15,17 @@ class PlayerLifebar(pygame.sprite.Sprite):
     def __init__(self, lifeBarEnabeled) :
         pygame.sprite.Sprite.__init__(self)
         self.lifes = 5
+        self.maxlifes = 8
         self.icon = textures['PLAYER_LIFE_ICON']
         self.lifeBarEnabeled = lifeBarEnabeled
 
     def remove_life(self) :
         if self.lifes > 0 :
             self.lifes -= 1
+
+    def restore_life(self) :
+        if self.lifes < self.maxlifes :
+            self.lifes += 1
 
     def render(self, window) :
         if(self.lifeBarEnabeled) :
@@ -155,6 +160,8 @@ class Player(pygame.sprite.Sprite):
                 if(powerup.type == 'PU_ENERGY'):
                     self.energybar.canrestore = True
                     self.energybar.restore_energy(200)
+                if(powerup.type == 'PU_HEALTH'):
+                    self.lifebar.restore_life()
                 powerup.destroy(powerups)
 
         self.vel += self.acc * dt

@@ -9,6 +9,23 @@ from Textures import *
 
 debug = False
 
+powerup_particles = []
+
+class PowerupPicked(pygame.sprite.Sprite):
+    def __init__(self, owner, pos) :
+        pygame.sprite.Sprite.__init__(self)
+        self.pos = pos
+        self.anim = 0
+        self.frames = textures['PU_PARTICLE']
+        
+    def render(self, window) :
+        
+        self.anim += 0.25
+        window.blit(self.frames[int(min(self.anim, 2))],self.pos-texturesOffsets['PU_PARTICLE'])
+
+        if self.anim >= 3 :
+            powerup_particles.remove(self)
+
 class Powerup(pygame.sprite.Sprite):
     def __init__(self, pos, dir, speed, type) :
         pygame.sprite.Sprite.__init__(self)
@@ -31,4 +48,10 @@ class Powerup(pygame.sprite.Sprite):
             self.collider.render(window)
 
     def destroy(self, powerups) :
-            powerups.remove(self)
+        powerup_particles.append(PowerupPicked(self, self.pos))
+        powerups.remove(self)
+
+PU_TYPES = ['PU_ENERGY', 'PU_HEALTH', 'PU_SHIELD']
+
+def get_random_type() :
+    return PU_TYPES[randint(0, 2)]

@@ -35,6 +35,9 @@ class LaserImpact(pygame.sprite.Sprite):
         scale = float(self.lifetime)/float(self.maxlife) + self.scale
         window.blit(pygame.transform.rotozoom(self.frames[int(self.anim)], 0, scale),self.pos-(24*scale, 24*scale))
 
+        if self.lifetime <= 0 :
+            laser_particles.remove(self)
+
 
 class Laser(pygame.sprite.Sprite):
     def __init__(self, owner, pos, dir, speed, lifetime = 60, scale = 1, precision = 0.05) :

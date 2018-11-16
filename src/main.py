@@ -132,7 +132,9 @@ def main() :
 
         for laserParts in laser_particles :
             laserParts.render(window)
-      
+        for powerupParts in powerup_particles :
+            powerupParts.render(window)
+
         # frame buffer ?
         pygame.display.flip()
 

@@ -15,7 +15,8 @@ textures = {
             'BOSS_SHIP' : pygame.image.load('./res/Images/Enemies/boss.png').convert_alpha(),
             'PU_ENERGY' : pygame.image.load('./res/Images/Power-ups/powerupGreen_bolt.png').convert_alpha(),
             'PU_HEALTH' : pygame.image.load('./res/Images/Power-ups/powerupGreen_health.png').convert_alpha(),
-            'PU_SHIELD' : pygame.image.load('./res/Images/Power-ups/powerupGreen_shield.png').convert_alpha()
+            'PU_SHIELD' : pygame.image.load('./res/Images/Power-ups/powerupGreen_shield.png').convert_alpha(),
+            'PU_PARTICLE' : [pygame.image.load('./res/Images/Effects/star' + str(i) + '.png').convert_alpha() for i in range(1, 4)],
         }
 
 #approx
@@ -30,7 +31,8 @@ texturesOffsets = {
     'BACKGROUND' :              (128, 128),
     'MINIBOSS_SHIP' :           (80, 60),
     'BOSS_SHIP' :               (128, 113),
-    'PU' :                      (17, 17)
+    'PU' :                      (17, 17),
+    'PU_PARTICLE' :             (12, 12)
 }
 
 def drawTexture(window, texture, posXY) :

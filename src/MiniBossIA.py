@@ -4,6 +4,7 @@ from Textures import *
 from math import *
 from random import *
 from MiniBoss import BossState
+from Powerup import *
 
 # methode securise pour lerp un point
 def target_point(start, target, speed) :
@@ -92,7 +93,7 @@ def phase2_update(self, boss) :
     if self.time % 10 == 0:
         boss.fire((0, 0), 0.02)
     if self.time % 60 == 0 :
-        boss.give_powerup((uniform(0, WIDTH), -34), 'PU_ENERGY')
+        boss.give_powerup((uniform(0, WIDTH), -34), get_random_type())
     #pass
 
 def phase2_render(self, window) :
