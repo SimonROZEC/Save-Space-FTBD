@@ -30,6 +30,7 @@ texturesOffsets = {
     'BACKGROUND' :              (128, 128),
     'MINIBOSS_SHIP' :           (80, 60),
     'BOSS_SHIP' :               (128, 113),
+    'PU' :                      (17, 17)
 }
 
 def drawTexture(window, texture, posXY) :

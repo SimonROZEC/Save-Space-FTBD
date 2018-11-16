@@ -26,13 +26,14 @@ keys = None
 from Player import *
 from MiniBoss import *
 from Laser import *
-
+from Powerup import *
 
 ##
 # Return false if game was closed py player, true if player lost
 #
 def main() :   
     lasers = []
+    powerups = []
     bossAndAddQueue = Queue()
 
     # struct
@@ -46,7 +47,7 @@ def main() :
 
     player = Player()
 
-    bossAndAddQueue.put(MiniBoss(lasers, player))
+    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
     #bossAndAddQueue.put(Meteorite())
     #bossAndAddQueue.put(Boss(lasers, player))
 
@@ -101,8 +102,10 @@ def main() :
         # for each laser check if should die
         for laser in lasers :
             laser.update(dt, lasers)
+        for powerup in powerups :
+            powerup.update(dt, powerups)
 
-        player.update(keys, dt, lasers, currentEnemy)
+        player.update(keys, dt, lasers, currentEnemy, powerups)
         
         currentEnemy.update(dt)
         
@@ -122,7 +125,9 @@ def main() :
         # blit order is important
         for laser in lasers :
             laser.render(window)
-        
+        for powerup in powerups :
+            powerup.render(window)
+
         player.render(window)
 
         currentEnemy.render(window)

@@ -6,6 +6,7 @@ from math import *
 from BossLifeBar import *
 
 from Laser import *
+from Powerup import *
 from Collider import *
 from Textures import *
 
@@ -44,7 +45,7 @@ class BossState:
 from MiniBossIA import states
 
 class MiniBoss(pygame.sprite.Sprite):
-    def __init__(self, lasers, player) :
+    def __init__(self, lasers, powerups, player) :
         pygame.sprite.Sprite.__init__(self)
 
         self.type = 'MINIBOSS'
@@ -66,6 +67,7 @@ class MiniBoss(pygame.sprite.Sprite):
         self.state = self.states['start']
 
         self.lasers = lasers
+        self.powerups = powerups
         self.player = player
 
         self.lifeBar = BossLifeBar(10000)
@@ -76,6 +78,9 @@ class MiniBoss(pygame.sprite.Sprite):
     def fire(self, target, precision = 0.05)  :
         laser = Laser(self, self.pos + OFFSET_LASER, pi*0.5, 0.5, 1000, 1.5, precision)
         self.lasers.append(laser)
+
+    def give_powerup(self, pos, type) :
+        self.powerups.append(Powerup(pos, pi*0.5, 0.1, type))
 
     def update(self, dt) :
 

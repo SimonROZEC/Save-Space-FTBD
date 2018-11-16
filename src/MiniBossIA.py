@@ -91,6 +91,8 @@ def phase2_update(self, boss) :
         boss.fire((0, 0), 1)
     if self.time % 10 == 0:
         boss.fire((0, 0), 0.02)
+    if self.time % 60 == 0 :
+        boss.give_powerup((uniform(0, WIDTH), -34), 'PU_ENERGY')
     #pass
 
 def phase2_render(self, window) :
