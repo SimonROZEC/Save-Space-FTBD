@@ -49,7 +49,7 @@ class MiniBoss(pygame.sprite.Sprite):
 
         self.type = 'MINIBOSS'
 
-        self.pos = pygame.math.Vector2(CENTERX, -10)
+        self.pos = pygame.math.Vector2(CENTERX, -40)
         self.vel = pygame.math.Vector2(0, 0)
         self.acc = pygame.math.Vector2(0, 0)
         self.image = textures['MINIBOSS_SHIP']
@@ -68,7 +68,7 @@ class MiniBoss(pygame.sprite.Sprite):
         self.lasers = lasers
         self.player = player
 
-        self.lifeBar = BossLifeBar(5000)
+        self.lifeBar = BossLifeBar(10000)
     
     def set_state(self, name) :
         self.state = self.states[name]
@@ -88,7 +88,7 @@ class MiniBoss(pygame.sprite.Sprite):
             collider = laser.collider
             for col in self.colliders :
                 if laser.owner.type == 'PLAYER' and col.collides(collider) : #collision
-                    self.lifeBar.remove_life(laser.lifetime / 1)
+                    self.lifeBar.remove_life(laser.lifetime)
                     laser.destroy(self.lasers)
                     break
 

@@ -17,13 +17,17 @@ class BossLifeBar(pygame.sprite.Sprite):
 
     def render(self, window) :
         if(self.lifeBarEnabeled) :
-            pygame.draw.rect(window, (255, 0, 0), [0, 2, WIDTH, 10])
+            drawRoundedRect(window,(0, 0, WIDTH, 10),(50, 50, 50),0.5)
+            drawRoundedRect(window,(0,4,WIDTH,6),(255,0,0),0.5)
+            # pygame.draw.rect(window, (255, 0, 0), [0, 2, WIDTH, 10])
             if(self.takingDamageAnim > 0) :
-                pygame.draw.rect(window, (255, 255, 255), [0, 2, WIDTH, 10])
+                # pygame.draw.rect(window, (255, 255, 255), [0, 2, WIDTH, 10])
+                drawRoundedRect(window,(0, 2, WIDTH, 10),(255, 255, 255),0.5)
                 self.takingDamageAnim -= 1
             else :
-                pygame.draw.rect(window, (0, 255, 0), [0, 2, WIDTH*(self.life*self.maxLife), 10])
-
-            pygame.draw.rect(window, (0, 0, 0), [0, 2, WIDTH, 10], 3)
+                drawRoundedRect(window,(0, 4, WIDTH*(self.life*self.maxLife), 6),(0, 200, 0),0.5)
+                # pygame.draw.rect(window, (0, 255, 0), [0, 2, WIDTH*(self.life*self.maxLife), 10])
+            
+            # pygame.draw.rect(window, (0, 0, 0), [0, 2, WIDTH, 10], 3)
 
             

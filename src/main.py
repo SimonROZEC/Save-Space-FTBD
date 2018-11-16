@@ -214,7 +214,7 @@ def menu() :
         for x in xrange(-256, WIDTH, 256) :
             for y in xrange(-256, HEIGHT, 256) :
                 window.blit(background, (x+offx, y+frameCounter%256))
-
+        
         for event in pygame.event.get() :
             if event.type == pygame.QUIT :
                 return
@@ -236,11 +236,13 @@ def menu() :
             pass
         else :
             framecount = 0
-
+        
         pygame.display.flip()
 
         framecount += 1
         frameCounter += 1
+
+
 
 while menu() :
     frameCount = 0
@@ -266,6 +268,7 @@ while menu() :
             break
 
         drawTexture(window, textTexture, coordText)
+        
         pygame.display.flip()
 
         for event in pygame.event.get() :
@@ -273,3 +276,4 @@ while menu() :
                 quit()
 
         frameCount += 1
+

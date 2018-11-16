@@ -20,7 +20,7 @@ def dist_to_point(start, target) :
 
 # Scene setup
 def start_init(self, boss) :
-    self.start_pos = pygame.math.Vector2(CENTERX, -120)
+    self.start_pos = pygame.math.Vector2(CENTERX, -150)
     self.current_pos = self.start_pos + (0, 0)
 
 def start_prepare(self, boss) :
