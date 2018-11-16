@@ -88,8 +88,11 @@ class Player(pygame.sprite.Sprite):
 
         self.firecd = 0
         self.invulframe = 0
+        self.shieldcd = 0
+        self.shield_duration = 3 * FPS
 
         self.collider = Collider(self, 32, pygame.math.Vector2(50, 40))
+        self.shield_collider = Collider(self, 64, pygame.math.Vector2(50, 40))
 
         self.lifebar = PlayerLifebar(hasLifeBar)
         self.energybar = PlayerEnergybar(hasLifeBar)
@@ -133,15 +136,12 @@ class Player(pygame.sprite.Sprite):
         # boss collision 
         for c in boss.colliders :
             if self.collider.collides(c) :
-                force = self.pos - boss.pos
-                if boss.type == 'MINIBOSS' :
-                    force -= (80, 20)
-                else :
-                    force -= (128, 20)
+                force = self.pos + texturesOffsets['PLAYER_SHIP'] - boss.pos
 
                 force.scale_to_length(2)
                 self.acc += force
-                self.hit()
+                if self.shieldcd <= 0 :
+                    self.hit()
 
         # laser collision
         for laser in lasers :
@@ -149,7 +149,10 @@ class Player(pygame.sprite.Sprite):
             if(laser.owner.type == 'PLAYER'):
                 break
 
-            if self.collider.collides(laser.collider) : #collision
+            if self.shieldcd > 0 :
+                if self.shield_collider.collides(laser.collider) :
+                    laser.destroy(lasers)
+            elif self.collider.collides(laser.collider) : #collision
                 self.hit()
                 laser.destroy(lasers)
 
@@ -160,8 +163,10 @@ class Player(pygame.sprite.Sprite):
                 if(powerup.type == 'PU_ENERGY'):
                     self.energybar.canrestore = True
                     self.energybar.restore_energy(200)
-                if(powerup.type == 'PU_HEALTH'):
+                elif(powerup.type == 'PU_HEALTH'):
                     self.lifebar.restore_life()
+                elif(powerup.type == 'PU_SHIELD'):
+                    self.shieldcd = self.shield_duration
                 powerup.destroy(powerups)
 
         self.vel += self.acc * dt
@@ -191,6 +196,7 @@ class Player(pygame.sprite.Sprite):
 
         self.invulframe -= 1
         self.firecd -= 1
+        self.shieldcd -= 1
 
     def render(self, window) :
         offx = self.vel.x * 2 if self.vel.x > 0 else 0
@@ -211,12 +217,22 @@ class Player(pygame.sprite.Sprite):
             window.blit(pygame.transform.rotate(self.fire[self.anim], 90), self.pos+(scalex + 3, 50-14/2))
 
         self.anim = (self.anim + 1) % 3
+        shieldframe = min((self.shield_duration - self.shieldcd) * 0.3, 2)
+
+        if self.shieldcd > 0 :
+            if self.shieldcd < FPS :
+                if self.shieldcd % 5 <= 2 :
+                    window.blit(textures['SHIELD'][int(shieldframe)], self.pos + texturesOffsets['PLAYER_SHIP'] - texturesOffsets['SHIELD'])
+            else :
+                window.blit(textures['SHIELD'][int(shieldframe)], self.pos + texturesOffsets['PLAYER_SHIP'] - texturesOffsets['SHIELD'])
 
         self.lifebar.render(window)
         self.energybar.render(window)
 
         if debug :
             self.collider.render(window)
+            if self.shieldcd > 0 :
+                self.shield_collider.render(window)
     
     def doDeath(self, window) :
         print('you dead bro')

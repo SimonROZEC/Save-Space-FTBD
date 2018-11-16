@@ -49,10 +49,7 @@ def phase1_update(self, boss) :
     boss.vel.x = sin(float(self.time) / 100.0)
     boss.vel.y = cos(float(self.time) / 50.0)
     if self.time % 20 == 0:
-        boss.fire(0.05, (0, HEIGHT))
-        boss.fire(0.05, (WIDTH, HEIGHT))
-        boss.fire(0.05, (WIDTH, 0))
-        boss.fire(0.05, (0, 0))
+        boss.fire(0.8)
     #pass
 
 def phase1_render(self, window) :
