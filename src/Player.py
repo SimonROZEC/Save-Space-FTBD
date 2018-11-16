@@ -27,6 +27,47 @@ class PlayerLifebar(pygame.sprite.Sprite):
             for i in range(self.lifes) :
                 window.blit(self.icon, (10 + i*36, 800 - 40))
 
+class PlayerEnergybar(pygame.sprite.Sprite):
+    def __init__(self, energyBarEnabeled) :
+        pygame.sprite.Sprite.__init__(self)
+        self.energy = 1000
+        self.maxenergy = 1000
+        self.icon = textures['PLAYER_ENERGY_ICON']
+        self.energyBarEnabeled = energyBarEnabeled
+        self.canrestore = True
+        self.restorecd = 0
+
+    def remove_energy(self, count) :
+        self.energy -= count
+        self.canrestore = False
+        self.restorecd = 60
+        
+        if self.energy < 0 :
+            self.energy = 0
+        
+
+    def restore_energy(self, count) :
+        if self.canrestore :
+            self.energy += count
+            if self.energy > self.maxenergy :
+                self.energy = self.maxenergy
+        else :
+            if self.restorecd < 0 :
+                self.canrestore = True  
+
+    def render(self, window) :
+        self.restorecd -= 1
+        partial = self.energy % 100
+        complete = self.energy / 100
+        
+        offset = WIDTH - 150 - 8
+        if(self.energyBarEnabeled) :
+            for i in range(complete + 1) :
+                if i != complete :
+                    window.blit(self.icon, (offset + i * 15 , 800 - 40))
+                else :
+                    blit_alpha(window, self.icon, (offset + (i) * 15, 800-40), (float(partial)/100.0)*255)
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, hasLifeBar = True) :
         pygame.sprite.Sprite.__init__(self)
@@ -46,6 +87,7 @@ class Player(pygame.sprite.Sprite):
         self.collider = Collider(self, 32, pygame.math.Vector2(50, 40))
 
         self.lifebar = PlayerLifebar(hasLifeBar)
+        self.energybar = PlayerEnergybar(hasLifeBar)
         self.time = 0
         self.scale = 1
 
@@ -117,15 +159,20 @@ class Player(pygame.sprite.Sprite):
 
         # create lasers
         if keys['fire'] and self.firecd <= 0:
-            self.firecd = 8
-            speed = 1
-            if self.vel.y < 0 :
-                speed += -self.vel.y * 0.05
-            dec = 0.02 * self.vel.x
-            l1 = Laser(self, self.pos + OFFSET_LASER_LEFT, -pi*0.5+dec, speed,100)
-            l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, -pi*0.5+dec, speed, 100)
-            lasers.append(l2)
-            lasers.append(l1)
+            if self.energybar.energy > 0 :
+                self.energybar.remove_energy(10)
+                self.firecd = 8
+                speed = 1
+                if self.vel.y < 0 :
+                    speed += -self.vel.y * 0.05
+                dec = 0.02 * self.vel.x
+                l1 = Laser(self, self.pos + OFFSET_LASER_LEFT, -pi*0.5+dec, speed,100)
+                l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, -pi*0.5+dec, speed, 100)
+                lasers.append(l2)
+                lasers.append(l1)
+
+        if not keys['fire'] :
+            self.energybar.restore_energy(5)
 
         self.invulframe -= 1
         self.firecd -= 1
@@ -151,6 +198,7 @@ class Player(pygame.sprite.Sprite):
         self.anim = (self.anim + 1) % 3
 
         self.lifebar.render(window)
+        self.energybar.render(window)
 
         if debug :
             self.collider.render(window)

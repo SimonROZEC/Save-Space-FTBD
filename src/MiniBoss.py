@@ -101,7 +101,7 @@ class MiniBoss(pygame.sprite.Sprite):
             for collider in self.colliders :
                 collider.render(window)
     
-    # méthode sécurisé pour target un point
+    # methode securise pour target un point
     def target_point(self, target, speed) :
         d = (target - self.pos) * speed
         if d.length() < 2 :
