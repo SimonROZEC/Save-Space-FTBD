@@ -75,8 +75,14 @@ class MiniBoss(pygame.sprite.Sprite):
     def set_state(self, name) :
         self.state = self.states[name]
 
-    def fire(self, target, precision = 0.05)  :
-        laser = Laser(self, self.pos + OFFSET_LASER, pi*0.5, 0.5, 1000, 1.5, precision)
+    def fire(self, precision = 0.05, target = None)  :
+        pos = self.pos + OFFSET_LASER
+        laser = None
+        if target == None :
+            laser = Laser(self, pos, pi*0.5, 0.5, 1000, 1.5, precision)
+        else :
+            a = NULLVEC.angle_to(pos - target)
+            laser = Laser(self, pos, radians(a) + pi, 0.5, 1000, 1.5, precision)
         self.lasers.append(laser)
 
     def give_powerup(self, target, type) :

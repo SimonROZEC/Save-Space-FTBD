@@ -49,7 +49,10 @@ def phase1_update(self, boss) :
     boss.vel.x = sin(float(self.time) / 100.0)
     boss.vel.y = cos(float(self.time) / 50.0)
     if self.time % 20 == 0:
-        boss.fire((0, 0), 0.6)
+        boss.fire(0.05, (0, HEIGHT))
+        boss.fire(0.05, (WIDTH, HEIGHT))
+        boss.fire(0.05, (WIDTH, 0))
+        boss.fire(0.05, (0, 0))
     #pass
 
 def phase1_render(self, window) :
@@ -77,11 +80,11 @@ def phase2_update(self, boss) :
     boss.vel.x = sin(float(self.time) / 100.0)
     boss.vel.y = cos(float(self.time) / 50.0)
     if self.time % 20 == 0:
-        boss.fire((0, 0), 1)
+        boss.fire(1)
     if self.time % 10 == 0:
-        boss.fire((0, 0), 0.02)
+        boss.fire(0.02)
     if self.time % 10 == 0 :
-        boss.give_powerup(boss.pos + (uniform(-400, 400), uniform(-400, 400)), get_random_type())
+        boss.give_powerup(boss.pos + (uniform(-100, 100), uniform(100, 200)), get_random_type())
     #pass
 
 def phase2_render(self, window) :
