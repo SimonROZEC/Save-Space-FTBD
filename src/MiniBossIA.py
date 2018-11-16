@@ -5,7 +5,7 @@ from math import *
 from random import *
 from MiniBoss import BossState
 
-# méthode sécurisé pour lerp un point
+# methode securise pour lerp un point
 def target_point(start, target, speed) :
     d = (target - start) * speed
     if d.length() < 2 :
