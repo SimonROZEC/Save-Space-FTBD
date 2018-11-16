@@ -63,7 +63,7 @@ def main() :
 
         for event in pygame.event.get() :
             if event.type == pygame.QUIT :
-                return False
+                return 'playerQuit'
 
             elif event.type == pygame.KEYDOWN :
                 if event.key == pygame.K_UP :
@@ -114,10 +114,8 @@ def main() :
             if(not bossAndAddQueue.empty()) :
                 currentEnemy = bossAndAddQueue.get()
                 pass
-            else :
-                print('you won !')
-                return True
-                #quit()
+            else :                
+                return 'playerWon'
 
         # blit order is important
         for laser in lasers :
@@ -132,9 +130,14 @@ def main() :
       
         # frame buffer ?
         pygame.display.flip()
-    return True
 
+    ## TODO
+    # faire une anim de fin de vie pour le joueur
+    player.doDeath(window)
 
+    return 'playerLost'
+
+#
 def startAnim(player) :
     coordsBack = pygame.math.Vector2(CENTERX, CENTERY + 100) - texturesOffsets['PLAYER_SHIP']
     coordsEnd = pygame.math.Vector2(CENTERX, - 1000) - texturesOffsets['PLAYER_SHIP']
@@ -152,7 +155,7 @@ def startAnim(player) :
             currentCoord = coordsEnd
 
         if((coordsEnd - player.pos).length() < 10) :
-            return True
+            return 'animEnded'
 
         # move back ground according to player poss
         offx = - sin(framecount*0.01) * 30
@@ -166,10 +169,11 @@ def startAnim(player) :
 
         for event in pygame.event.get() :
             if event.type == pygame.QUIT :
-                return False
+                return 'playerQuit'
 
         framecount += 1
-    return True
+    # should not be reachable
+    return 'animEnded'
 
 ## Menu
 def menu() :
@@ -183,6 +187,7 @@ def menu() :
 
     goalCoord = pygame.math.Vector2(CENTERX, CENTERY) - texturesOffsets['PLAYER_SHIP']
 
+    ## anim de debut de menu
     while True :
         clock.tick(FPS)
          
@@ -197,12 +202,13 @@ def menu() :
 
         for event in pygame.event.get() :
             if event.type == pygame.QUIT :
-                return
+                return 'playerQuit'
 
         player.render(window)
 
         pygame.display.flip()
 
+    #anim d'attente
     framecount = 0
     frameCounter = 0
     while True :
@@ -220,13 +226,9 @@ def menu() :
                 return
             elif event.type == pygame.KEYDOWN :
                 if event.key == pygame.K_SPACE :   
-                    if(not startAnim(player)) :
-                        return False
-
-                    if (main()) :
-                        return True 
-                    else :
-                        return False
+                    if(startAnim(player) == 'playerQuit') :
+                        return 'playerQuit'
+                    return main()
 
         player.render(window)
 
@@ -244,12 +246,21 @@ def menu() :
 
 
 
-while menu() :
+while True :
+    retVal = menu()
+
+    textTexture = None
+
     frameCount = 0
-
     background = textures['BACKGROUND']
-    textTexture = createTextTexture('You lost', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
 
+    if(retVal == 'playerQuit') :
+        quit()
+    elif (retVal == 'playerWon') :
+        textTexture = createTextTexture('You WON !!', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
+    elif (retVal == 'playerLost') :
+        textTexture = createTextTexture('You lost', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
+          
     coordTextStart = pygame.math.Vector2(-500, CENTERY)
     coordMiddleText = pygame.math.Vector2(CENTERX - 75, CENTERY)
 

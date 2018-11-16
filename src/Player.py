@@ -202,4 +202,8 @@ class Player(pygame.sprite.Sprite):
 
         if debug :
             self.collider.render(window)
+    
+    def doDeath(self, window) :
+        print('you dead bro')
+        pass
         
