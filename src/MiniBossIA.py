@@ -17,6 +17,7 @@ def start_prepare(self, boss) :
     self.current_pos = self.current_pos.lerp((CENTERX, 130), 0.015)
     if ((CENTERX, 230)-boss.pos).length() < 10 :
         self.prepared = True
+        
     #pass
 
 def start_update(self, boss) :
@@ -82,6 +83,9 @@ def phase2_update(self, boss) :
         boss.fire(0.02)
     if self.time % 10 == 0 :
         boss.give_powerup(boss.pos + (uniform(-100, 100), uniform(100, 200)), get_random_type())
+
+    if self.time % FPS * 4 == 0 :
+      boss.create_shield(120)
     #pass
 
 def phase2_render(self, window) :
@@ -93,7 +97,7 @@ def phase2_end(self, boss) :
 def states(boss) :
     return {
         'start'   : BossState(boss, start_prepare, start_update, start_end, start_render, start_init),
-        'phase1' : BossState(boss, phase1_prepare, phase1_update, phase1_end, phase1_render),
+        'phase1' : BossState(boss, phase1_prepare, phase1_update, phase1_end, phase1_render, phase1_init),
         'phase2' : BossState(boss, phase2_prepare, phase2_update, phase2_end, phase2_render),
         'phase3': BossState(boss, phase1_prepare, phase1_update, phase1_end, phase1_render),
         'end' : BossState(boss, start_prepare, start_update, start_end, start_render)

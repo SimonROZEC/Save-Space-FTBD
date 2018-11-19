@@ -135,13 +135,17 @@ class Player(pygame.sprite.Sprite):
 
         # boss collision 
         for c in boss.colliders :
-            if self.collider.collides(c) :
+            collider = self.collider
+            if self.shieldcd >= 0 :
+              collider = self.shield_collider
+            if collider.collides(c) or (collider.collides(boss.shield_collider) and boss.shieldcd > 0):
                 force = self.pos + texturesOffsets['PLAYER_SHIP'] - boss.pos
 
                 force.scale_to_length(2)
                 self.acc += force
                 if self.shieldcd <= 0 :
                     self.hit()
+                break
 
         # laser collision
         for laser in lasers :
@@ -180,14 +184,14 @@ class Player(pygame.sprite.Sprite):
         # create lasers
         if keys['fire'] and self.firecd <= 0:
             if self.energybar.energy > 0 :
-                self.energybar.remove_energy(10)
+                self.energybar.remove_energy(20)
                 self.firecd = 8
                 speed = 1
                 if self.vel.y < 0 :
                     speed += -self.vel.y * 0.05
                 dec = 0.02 * self.vel.x
-                l1 = Laser(self, self.pos + OFFSET_LASER_LEFT, -pi*0.5+dec, speed,100)
-                l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, -pi*0.5+dec, speed, 100)
+                l1 = Laser(self, self.pos + OFFSET_LASER_LEFT, -pi*0.5+dec, speed,50)
+                l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, -pi*0.5+dec, speed, 50)
                 lasers.append(l2)
                 lasers.append(l1)
 
