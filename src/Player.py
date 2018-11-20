@@ -14,7 +14,7 @@ OFFSET_LASER_RIGHT = pygame.math.Vector2(99-24, 20)
 class PlayerLifebar(pygame.sprite.Sprite):
     def __init__(self, lifeBarEnabeled) :
         pygame.sprite.Sprite.__init__(self)
-        self.lifes = 5
+        self.lifes = 8
         self.maxlifes = 8
         self.icon = textures['PLAYER_LIFE_ICON']
         self.lifeBarEnabeled = lifeBarEnabeled
@@ -89,7 +89,7 @@ class Player(pygame.sprite.Sprite):
         self.firecd = 0
         self.invulframe = 0
         self.shieldcd = 0
-        self.shield_duration = 3 * FPS
+        self.shield_duration = 2 * FPS
 
         self.collider = Collider(self, 32, pygame.math.Vector2(50, 40))
         self.shield_collider = Collider(self, 64, pygame.math.Vector2(50, 40))
@@ -166,7 +166,7 @@ class Player(pygame.sprite.Sprite):
             if self.collider.collides(powerup.collider) :
                 if(powerup.type == 'PU_ENERGY'):
                     self.energybar.canrestore = True
-                    self.energybar.restore_energy(200)
+                    self.energybar.restore_energy(800)
                 elif(powerup.type == 'PU_HEALTH'):
                     self.lifebar.restore_life()
                 elif(powerup.type == 'PU_SHIELD'):
@@ -224,7 +224,7 @@ class Player(pygame.sprite.Sprite):
         shieldframe = min((self.shield_duration - self.shieldcd) * 0.3, 2)
 
         if self.shieldcd > 0 :
-            if self.shieldcd < FPS :
+            if self.shieldcd < FPS * 0.5 :
                 if self.shieldcd % 5 <= 2 :
                     window.blit(textures['SHIELD'][int(shieldframe)], self.pos + texturesOffsets['PLAYER_SHIP'] - texturesOffsets['SHIELD'])
             else :

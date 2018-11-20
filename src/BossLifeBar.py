@@ -14,6 +14,8 @@ class BossLifeBar(pygame.sprite.Sprite):
         if self.life > 0 :
             self.life -= damage
             self.takingDamageAnim = 2
+            if self.life <= 0 :
+                self.life = 1
 
     def render(self, window) :
         if(self.lifeBarEnabeled) :

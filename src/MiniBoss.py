@@ -70,7 +70,7 @@ class MiniBoss(pygame.sprite.Sprite):
         self.powerups = powerups
         self.player = player
 
-        self.lifeBar = BossLifeBar(10000)
+        self.lifeBar = BossLifeBar(15000)
 
         self.shieldcd = 0
         self.shield_duration = 0
@@ -87,7 +87,7 @@ class MiniBoss(pygame.sprite.Sprite):
         self.shieldcd = duration
         self.shield_duration = duration
 
-    def create_shield(self, duration) : # si un shield existe déjà, ne reset pas le cd
+    def create_shield(self, duration) : # si un shield existe deja, ne reset pas le cd
         if self.shieldcd > 0 :
           return
         self.shieldcd = duration
@@ -129,8 +129,8 @@ class MiniBoss(pygame.sprite.Sprite):
                         break
 
     def render(self, window) :
-        self.state.render(window)
-        window.blit(self.image, self.pos-texturesOffsets['MINIBOSS_SHIP'])
+        
+        window.blit(pygame.transform.rotozoom(self.image, 0, self.scale), self.pos-texturesOffsets['MINIBOSS_SHIP']*self.scale)
         
         # print('shield ' + str(self.shieldcd))
 
@@ -143,9 +143,10 @@ class MiniBoss(pygame.sprite.Sprite):
             else :
                 window.blit(self.shield_tex[int(shieldframe)], self.pos - texturesOffsets['SHIELD'] * self.shield_scale + (-2, 10))
             
-
+        self.state.render(window)
         self.lifeBar.render(window)
         
+
         if debug :
             for collider in self.colliders :
                 collider.render(window)
@@ -162,6 +163,9 @@ class MiniBoss(pygame.sprite.Sprite):
             else :
                 d.scale_to_length(2)
         self.pos += d
+
+    def finish(self) :
+        self.lifeBar.life = 0
 
     def dist_to_point(self, target) :
         return (target-self.pos).length()

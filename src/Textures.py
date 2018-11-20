@@ -18,6 +18,7 @@ textures = {
             'PU_SHIELD' : pygame.image.load('./res/Images/Power-ups/powerupGreen_shield.png').convert_alpha(),
             'PU_PARTICLE' : [pygame.image.load('./res/Images/Effects/star' + str(i) + '.png').convert_alpha() for i in range(1, 4)],
             'SHIELD' : [pygame.image.load('./res/Images/Effects/shield' + str(i) + '.png').convert_alpha() for i in range(1, 4)],
+            'SMOKE' :[pygame.image.load('./res/Images/Effects/spaceEffects_' + str(i) + '.png').convert_alpha() for i in range(8, 15)],
         }
 
 #approx
