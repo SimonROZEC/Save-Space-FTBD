@@ -16,11 +16,7 @@ clock = pygame.time.Clock()
 # textures 
 from Textures import *
 
-#strange aliases
-try:
-    xrange
-except NameError:
-    xrange = range
+
 
 # struct
 keys = None

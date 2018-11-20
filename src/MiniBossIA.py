@@ -180,6 +180,11 @@ def end_prepare(self, boss) :
     d = boss.dist_to_point(self.center)
     if d < 10 :
         self.prepared = True
+        for i in xrange(0, 8) :
+            pu = 'PU_ENERGY'
+            if randint(0, 2) == 0 :
+                pu = 'PU_HEALTH'
+            boss.give_powerup(boss.pos + (uniform(-200, 200), uniform(-200, 100)), pu)
 
 # First phase
 def end_update(self, boss) :
