@@ -51,7 +51,7 @@ def main() :
 
     # IA
     ia = IAPlayer(player)
-    PLAYER_IS_IA = True
+    PLAYER_IS_IA = False
 
 
     bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
@@ -149,8 +149,8 @@ def main() :
         for laserParts in laser_particles :
             laserParts.render(window)
       
-        if(PLAYER_IS_IA) :
-            ia.debug(window)
+        #if(PLAYER_IS_IA) :
+            #ia.debug(window)
 
         for powerupParts in powerup_particles :
             powerupParts.render(window)
