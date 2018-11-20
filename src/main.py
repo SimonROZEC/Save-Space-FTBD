@@ -52,9 +52,9 @@ def main() :
     ia = IAPlayer(player, powerups)
     PLAYER_IS_IA = False
 
-    
-    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
     bossAndAddQueue.put(Boss(lasers, powerups, player))
+    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
+    
     #bossAndAddQueue.put(Meteorite())
     #bossAndAddQueue.put(Boss(lasers, player))
 
@@ -300,10 +300,8 @@ def menu() :
 
 
 while True :
-    run_end = add_segment("end") # arrondi au centieme
-
     retVal = menu()
-
+    run_end = add_segment("end") # arrondi au centieme
     textTexture = None
 
     frameCount = 0

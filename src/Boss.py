@@ -14,34 +14,6 @@ debug = False
 
 OFFSET_LASER = pygame.math.Vector2(0, 20)
 
-class BossState:
-    def __init__(self, boss, prepare, update, end, render, init = None) :
-        self.boss = boss
-        
-        self.p = prepare # update preparation du boss pour commencer l'etat + condition de fin de preparation
-        
-        self.u = update # mise a jour du boss pour un etat specifique
-        self.r = render # affichage d'effets graphiques specifiques a l'etat
-
-        self.e = end # condition de fin de l'etat et passage a l'etat suivant
-
-        self.time = 0
-        self.prepared = False # le boss a termine la phase de preparation de son etat
-        if not init == None :
-            init(self, boss)
-
-    def update(self):
-        self.time += 1
-        if not self.prepared :
-            self.p(self, self.boss)
-        else :
-            self.u(self, self.boss)
-        
-        self.e(self, self.boss)
-
-    def render(self, window):
-        self.r(self, window)
-
 from BossIA import states
 
 class Boss(pygame.sprite.Sprite):
@@ -50,7 +22,7 @@ class Boss(pygame.sprite.Sprite):
 
         self.type = 'MINIBOSS'
 
-        self.pos = pygame.math.Vector2(CENTERX, -40)
+        self.pos = pygame.math.Vector2(CENTERX, -120)
         self.vel = pygame.math.Vector2(0, 0)
         self.acc = pygame.math.Vector2(0, 0)
         self.image = textures['BOSS_SHIP']
