@@ -3,6 +3,8 @@ import pygame
 from queue import Queue
 
 from globaldefines import *
+from IAPlayer import *
+
 
 # init sdl
 pygame.init()
@@ -47,6 +49,11 @@ def main() :
 
     player = Player()
 
+    # IA
+    ia = IAPlayer(player)
+    PLAYER_IS_IA = True
+
+
     bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
     #bossAndAddQueue.put(Meteorite())
     #bossAndAddQueue.put(Boss(lasers, player))
@@ -65,32 +72,41 @@ def main() :
         for event in pygame.event.get() :
             if event.type == pygame.QUIT :
                 return 'playerQuit'
+            elif(not PLAYER_IS_IA) :
+                
+                if event.type == pygame.KEYDOWN :
+                    if event.key == pygame.K_UP :
+                        keys['up'] = True
+                    elif event.key == pygame.K_DOWN :
+                        keys['down'] = True
+                    elif event.key == pygame.K_LEFT :
+                        keys['left'] = True
+                    elif event.key == pygame.K_RIGHT :
+                        keys['right'] = True
+                    elif event.key == pygame.K_a :
+                        keys['fire'] = True
+                elif event.type == pygame.KEYUP :
+                    if event.key == pygame.K_UP :
+                        keys['up'] = False
+                    elif event.key == pygame.K_DOWN :
+                        keys['down'] = False
+                    elif event.key == pygame.K_LEFT :
+                        keys['left'] = False
+                    elif event.key == pygame.K_RIGHT :
+                        keys['right'] = False
+                    elif event.key == pygame.K_a :
+                        keys['fire'] = False
+                        
+        if(PLAYER_IS_IA) : 
+            keys =  {
+                'up'   : False,
+                'down' : False,
+                'left' : False,
+                'right': False,
+                'fire' : False
+            }             
+            ia.processInput(currentEnemy, lasers, keys)
 
-            elif event.type == pygame.KEYDOWN :
-                if event.key == pygame.K_UP :
-                    keys['up'] = True
-                elif event.key == pygame.K_DOWN :
-                    keys['down'] = True
-                elif event.key == pygame.K_LEFT :
-                    keys['left'] = True
-                elif event.key == pygame.K_RIGHT :
-                    keys['right'] = True
-                elif event.key == pygame.K_a :
-                    keys['fire'] = True
-
-            elif event.type == pygame.KEYUP :
-                if event.key == pygame.K_UP :
-                    keys['up'] = False
-                elif event.key == pygame.K_DOWN :
-                    keys['down'] = False
-                elif event.key == pygame.K_LEFT :
-                    keys['left'] = False
-                elif event.key == pygame.K_RIGHT :
-                    keys['right'] = False
-                elif event.key == pygame.K_a :
-                    keys['fire'] = False
-
-        
         # move back ground according to player poss
         offx = - player.pos.x * 0.125
         offy = - player.pos.y * 0.125
@@ -132,6 +148,10 @@ def main() :
 
         for laserParts in laser_particles :
             laserParts.render(window)
+      
+        if(PLAYER_IS_IA) :
+            ia.debug(window)
+
         for powerupParts in powerup_particles :
             powerupParts.render(window)
 
