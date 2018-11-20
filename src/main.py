@@ -49,12 +49,24 @@ def main() :
     player = Player()
 
     # IA
-    ia = IAPlayer(player)
-    PLAYER_IS_IA = False
+    ia = IAPlayer(player, powerups)
+    PLAYER_IS_IA = True
 
     
     bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
+<<<<<<< HEAD
     bossAndAddQueue.put(Boss(lasers, powerups, player))
+=======
+    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
+    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
+    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
+    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
+    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
+    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
+    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
+    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
+    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
+>>>>>>> d6d0b4364d92d9309246bb3121ae00c5a8e0b7d1
     #bossAndAddQueue.put(Meteorite())
     #bossAndAddQueue.put(Boss(lasers, player))
 
@@ -142,8 +154,12 @@ def main() :
         if(currentEnemy.lifeBar.life <= 0) :
             if(not bossAndAddQueue.empty()) :
                 currentEnemy = bossAndAddQueue.get()
+<<<<<<< HEAD
                 ### segment time
 
+=======
+                print('One boss done')
+>>>>>>> d6d0b4364d92d9309246bb3121ae00c5a8e0b7d1
                 pass
             else :                
                 return 'playerWon'
