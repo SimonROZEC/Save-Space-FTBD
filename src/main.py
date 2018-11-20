@@ -23,6 +23,7 @@ keys = None
 
 from Player import *
 from MiniBoss import *
+from Boss import *
 from Laser import *
 from Powerup import *
 
@@ -49,8 +50,9 @@ def main() :
     ia = IAPlayer(player)
     PLAYER_IS_IA = False
 
-
+    
     bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
+    bossAndAddQueue.put(Boss(lasers, powerups, player))
     #bossAndAddQueue.put(Meteorite())
     #bossAndAddQueue.put(Boss(lasers, player))
 

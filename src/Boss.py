@@ -42,9 +42,9 @@ class BossState:
     def render(self, window):
         self.r(self, window)
 
-from MiniBossIA import states
+from BossIA import states
 
-class MiniBoss(pygame.sprite.Sprite):
+class Boss(pygame.sprite.Sprite):
     def __init__(self, lasers, powerups, player) :
         pygame.sprite.Sprite.__init__(self)
 
@@ -53,13 +53,13 @@ class MiniBoss(pygame.sprite.Sprite):
         self.pos = pygame.math.Vector2(CENTERX, -40)
         self.vel = pygame.math.Vector2(0, 0)
         self.acc = pygame.math.Vector2(0, 0)
-        self.image = textures['MINIBOSS_SHIP']
+        self.image = textures['BOSS_SHIP']
 
         self.scale = 1
 
         self.colliders = [
-            Collider(self, 24, pygame.math.Vector2(-50, 20)),
-            Collider(self, 24, pygame.math.Vector2(50, 20)),
+            Collider(self, 42, pygame.math.Vector2(-70, 40)),
+            Collider(self, 42, pygame.math.Vector2(70, 40)),
             Collider(self, 64, pygame.math.Vector2(0, -30))
         ]
 
@@ -70,13 +70,13 @@ class MiniBoss(pygame.sprite.Sprite):
         self.powerups = powerups
         self.player = player
 
-        self.lifeBar = BossLifeBar(12000)
+        self.lifeBar = BossLifeBar(1000)
 
         self.shieldcd = 0
         self.shield_duration = 0
         self.shield_tex = []
-        self.shield_scale = 1.4
-        self.shield_collider = Collider(self, 100, pygame.math.Vector2(0, 6))
+        self.shield_scale = 2.5
+        self.shield_collider = Collider(self, 170, pygame.math.Vector2(0, 6))
         for t in textures['SHIELD'] :
           self.shield_tex.append(pygame.transform.rotozoom(t, 180, self.shield_scale).convert_alpha())
 
@@ -130,7 +130,7 @@ class MiniBoss(pygame.sprite.Sprite):
 
     def render(self, window) :
         
-        window.blit(pygame.transform.rotozoom(self.image, 0, self.scale), self.pos-texturesOffsets['MINIBOSS_SHIP']*self.scale)
+        window.blit(pygame.transform.rotozoom(self.image, 0, self.scale), self.pos-texturesOffsets['BOSS_SHIP']*self.scale)
         
         # print('shield ' + str(self.shieldcd))
 

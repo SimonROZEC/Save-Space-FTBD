@@ -57,7 +57,7 @@ def phase1_update(self, boss) :
         if randint(0, 5) == 2 :
             pu = 'PU_HEALTH'
         boss.give_powerup(boss.pos + (uniform(-200, 200), uniform(-200, -400)), pu)
-    if (self.time+1) % (FPS * 10) == 0 :
+    if (self.time+1) % (FPS * 2) == 0 :
         boss.create_shield(FPS*3)
     #pass
 
