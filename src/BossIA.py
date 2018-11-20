@@ -80,6 +80,7 @@ def phase1_render(self, window) :
 def phase1_end(self, boss) :
     if boss.lifeBar.life * boss.lifeBar.maxLife <= 1-1/6 :
         boss.set_state('phase2')
+        add_segment("Boss 1st phase")
     pass
 
 #################################################################################################
@@ -120,6 +121,7 @@ def phase2_end(self, boss) :
         boss.give_powerup(boss.pos + (uniform(-400, 400), uniform(-400, 100)), 'PU_ENERGY')
         boss.give_powerup(boss.pos + (uniform(-400, 400), uniform(-400, 100)), 'PU_HEALTH')
         boss.set_state('phase3')
+        add_segment("Boss 2nd phase")
     pass
 
 #################################################################################################
