@@ -4,19 +4,8 @@ from Textures import *
 from math import *
 from random import *
 from MiniBoss import BossState
+from Powerup import *
 
-# methode securise pour lerp un point
-def target_point(start, target, speed) :
-    d = (target - start) * speed
-    if d.length() < 2 :
-        if dist_to_point(start, target) < 2 :
-            return target
-        else :
-            d.scale_to_length(2)
-    return start + d
-
-def dist_to_point(start, target) :
-    return (target-start).length()
 
 # Scene setup
 def start_init(self, boss) :
@@ -28,6 +17,7 @@ def start_prepare(self, boss) :
     self.current_pos = self.current_pos.lerp((CENTERX, 130), 0.015)
     if ((CENTERX, 230)-boss.pos).length() < 10 :
         self.prepared = True
+        
     #pass
 
 def start_update(self, boss) :
@@ -60,7 +50,7 @@ def phase1_update(self, boss) :
     boss.vel.x = sin(float(self.time) / 100.0)
     boss.vel.y = cos(float(self.time) / 50.0)
     if self.time % 20 == 0:
-        boss.fire((0, 0), 0.6)
+        boss.fire(0.8)
     #pass
 
 def phase1_render(self, window) :
@@ -88,9 +78,14 @@ def phase2_update(self, boss) :
     boss.vel.x = sin(float(self.time) / 100.0)
     boss.vel.y = cos(float(self.time) / 50.0)
     if self.time % 20 == 0:
-        boss.fire((0, 0), 1)
+        boss.fire(1)
     if self.time % 10 == 0:
-        boss.fire((0, 0), 0.02)
+        boss.fire(0.02)
+    if self.time % 10 == 0 :
+        boss.give_powerup(boss.pos + (uniform(-100, 100), uniform(100, 200)), get_random_type())
+
+    if self.time % FPS * 4 == 0 :
+      boss.create_shield(120)
     #pass
 
 def phase2_render(self, window) :
@@ -102,7 +97,7 @@ def phase2_end(self, boss) :
 def states(boss) :
     return {
         'start'   : BossState(boss, start_prepare, start_update, start_end, start_render, start_init),
-        'phase1' : BossState(boss, phase1_prepare, phase1_update, phase1_end, phase1_render),
+        'phase1' : BossState(boss, phase1_prepare, phase1_update, phase1_end, phase1_render, phase1_init),
         'phase2' : BossState(boss, phase2_prepare, phase2_update, phase2_end, phase2_render),
         'phase3': BossState(boss, phase1_prepare, phase1_update, phase1_end, phase1_render),
         'end' : BossState(boss, start_prepare, start_update, start_end, start_render)

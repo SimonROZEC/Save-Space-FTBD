@@ -15,21 +15,26 @@ textures = {
             'BOSS_SHIP' : pygame.image.load('./res/Images/Enemies/boss.png').convert_alpha(),
             'PU_ENERGY' : pygame.image.load('./res/Images/Power-ups/powerupGreen_bolt.png').convert_alpha(),
             'PU_HEALTH' : pygame.image.load('./res/Images/Power-ups/powerupGreen_health.png').convert_alpha(),
-            'PU_SHIELD' : pygame.image.load('./res/Images/Power-ups/powerupGreen_shield.png').convert_alpha()
+            'PU_SHIELD' : pygame.image.load('./res/Images/Power-ups/powerupGreen_shield.png').convert_alpha(),
+            'PU_PARTICLE' : [pygame.image.load('./res/Images/Effects/star' + str(i) + '.png').convert_alpha() for i in range(1, 4)],
+            'SHIELD' : [pygame.image.load('./res/Images/Effects/shield' + str(i) + '.png').convert_alpha() for i in range(1, 4)],
         }
 
 #approx
 texturesOffsets = {
-    'LASER_PLAYER':             (4.5, 0),
-    'LASER_ENEMY':              (4.5, 0),
-    'LASER_PLAYER_EXPLOSION' :  (5, 5),
-    'LASER_ENEMY_EXPLOSION' :   (0, 0),
-    'PLAYER_SHIP' :             (50, 38),
-    'PLAYER_THRUSTER' :         (0, 0),
-    'PLAYER_LIFE_ICON' :        (0, 0),
-    'BACKGROUND' :              (128, 128),
-    'MINIBOSS_SHIP' :           (80, 60),
-    'BOSS_SHIP' :               (128, 113),
+    'LASER_PLAYER':             pygame.math.Vector2(4.5, 0),
+    'LASER_ENEMY':              pygame.math.Vector2(4.5, 0),
+    'LASER_PLAYER_EXPLOSION' :  pygame.math.Vector2(5, 5),
+    'LASER_ENEMY_EXPLOSION' :   pygame.math.Vector2(0, 0),
+    'PLAYER_SHIP' :             pygame.math.Vector2(50, 38),
+    'PLAYER_THRUSTER' :         pygame.math.Vector2(0, 0),
+    'PLAYER_LIFE_ICON' :        pygame.math.Vector2(0, 0),
+    'BACKGROUND' :              pygame.math.Vector2(128, 128),
+    'MINIBOSS_SHIP' :           pygame.math.Vector2(80, 60),
+    'BOSS_SHIP' :               pygame.math.Vector2(128, 113),
+    'PU' :                      pygame.math.Vector2(17, 17),
+    'PU_PARTICLE' :             pygame.math.Vector2(12, 12),
+    'SHIELD' :                  pygame.math.Vector2(144 * 0.5, 137 * 0.5)
 }
 
 def drawTexture(window, texture, posXY) :

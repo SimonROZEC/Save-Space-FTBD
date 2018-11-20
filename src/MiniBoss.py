@@ -6,6 +6,7 @@ from math import *
 from BossLifeBar import *
 
 from Laser import *
+from Powerup import *
 from Collider import *
 from Textures import *
 
@@ -44,7 +45,7 @@ class BossState:
 from MiniBossIA import states
 
 class MiniBoss(pygame.sprite.Sprite):
-    def __init__(self, lasers, player) :
+    def __init__(self, lasers, powerups, player) :
         pygame.sprite.Sprite.__init__(self)
 
         self.type = 'MINIBOSS'
@@ -66,40 +67,90 @@ class MiniBoss(pygame.sprite.Sprite):
         self.state = self.states['start']
 
         self.lasers = lasers
+        self.powerups = powerups
         self.player = player
 
         self.lifeBar = BossLifeBar(10000)
-    
+
+        self.shieldcd = 0
+        self.shield_duration = 0
+        self.shield_tex = []
+        self.shield_scale = 1.4
+        self.shield_collider = Collider(self, 100, pygame.math.Vector2(0, 6))
+        for t in textures['SHIELD'] :
+          self.shield_tex.append(pygame.transform.rotozoom(t, 180, self.shield_scale).convert_alpha())
+
     def set_state(self, name) :
         self.state = self.states[name]
 
-    def fire(self, target, precision = 0.05)  :
-        laser = Laser(self, self.pos + OFFSET_LASER, pi*0.5, 0.5, 1000, 1.5, precision)
+    def set_shield(self, duration) :
+        self.shieldcd = duration
+        self.shield_duration = duration
+
+    def create_shield(self, duration) : # si un shield existe déjà, ne reset pas le cd
+        if self.shieldcd > 0 :
+          return
+        self.shieldcd = duration
+        self.shield_duration = duration
+
+    def remove_shield(self) :
+        self.shieldcd = 0
+
+    def fire(self, precision = 0.05, target = None)  :
+        pos = self.pos + OFFSET_LASER
+        laser = None
+        if target == None :
+            laser = Laser(self, pos, pi*0.5, 0.5, 1000, 1.5, precision)
+        else :
+            a = NULLVEC.angle_to(pos - target)
+            laser = Laser(self, pos, radians(a) + pi, 0.5, 1000, 1.5, precision)
         self.lasers.append(laser)
+
+    def give_powerup(self, target, type) :
+        self.powerups.append(Powerup(self.pos, target, type))
 
     def update(self, dt) :
 
         self.state.update()
-
+        self.shieldcd -= 1
         self.pos += self.vel
 
         # check collisions
         for laser in self.lasers :
             collider = laser.collider
-            for col in self.colliders :
-                if laser.owner.type == 'PLAYER' and col.collides(collider) : #collision
-                    self.lifeBar.remove_life(laser.lifetime)
+            if self.shieldcd > 0 :
+                if laser.owner.type == 'PLAYER' and self.shield_collider.collides(collider) :
                     laser.destroy(self.lasers)
-                    break
+            else :
+                for col in self.colliders :
+                    if laser.owner.type == 'PLAYER' and col.collides(collider) : #collision
+                        self.lifeBar.remove_life(laser.lifetime)
+                        laser.destroy(self.lasers)
+                        break
 
     def render(self, window) :
         self.state.render(window)
         window.blit(self.image, self.pos-texturesOffsets['MINIBOSS_SHIP'])
         
+        # print('shield ' + str(self.shieldcd))
+
+        if self.shieldcd > 0 :
+            shieldframe = min((self.shield_duration - self.shieldcd) * 0.3, 2)
+            
+            if self.shieldcd < FPS :
+                if self.shieldcd % 5 <= 2 :
+                    window.blit(self.shield_tex[int(shieldframe)], self.pos - texturesOffsets['SHIELD'] * self.shield_scale + (-2, 10))
+            else :
+                window.blit(self.shield_tex[int(shieldframe)], self.pos - texturesOffsets['SHIELD'] * self.shield_scale + (-2, 10))
+            
+
         self.lifeBar.render(window)
+        
         if debug :
             for collider in self.colliders :
                 collider.render(window)
+            if self.shieldcd > 0 :
+                self.shield_collider.render(window)
     
     # methode securise pour target un point
     def target_point(self, target, speed) :
