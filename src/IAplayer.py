@@ -40,8 +40,8 @@ class IAPlayer():
     # when shielded can ignore lasers
 
         goodPu = None
-        for( pu in self.powerup ) :
-            if( goodPu == None ) :
+        for pu in self.powerup :
+            if goodPu == None  :
                 goodPu = pu
                 pass
 

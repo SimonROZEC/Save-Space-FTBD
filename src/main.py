@@ -9,7 +9,7 @@ from queue import Queue
 pygame.init()
 
 from globaldefines import *
-from IAPlayer import *
+from IAplayer import *
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("-#- Space Shooter -#-")
@@ -50,23 +50,11 @@ def main() :
 
     # IA
     ia = IAPlayer(player, powerups)
-    PLAYER_IS_IA = True
+    PLAYER_IS_IA = False
 
     
     bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
-<<<<<<< HEAD
     bossAndAddQueue.put(Boss(lasers, powerups, player))
-=======
-    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
-    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
-    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
-    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
-    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
-    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
-    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
-    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
-    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
->>>>>>> d6d0b4364d92d9309246bb3121ae00c5a8e0b7d1
     #bossAndAddQueue.put(Meteorite())
     #bossAndAddQueue.put(Boss(lasers, player))
 
@@ -154,12 +142,8 @@ def main() :
         if(currentEnemy.lifeBar.life <= 0) :
             if(not bossAndAddQueue.empty()) :
                 currentEnemy = bossAndAddQueue.get()
-<<<<<<< HEAD
                 ### segment time
 
-=======
-                print('One boss done')
->>>>>>> d6d0b4364d92d9309246bb3121ae00c5a8e0b7d1
                 pass
             else :                
                 return 'playerWon'
@@ -185,16 +169,16 @@ def main() :
             powerupParts.render(window)
 
         #window.blit(timeT, )
-        tm = str ( get_time())[:-1] # arrondi au centieme
+        tm = str ( get_time()) # arrondi au centieme
         display_text(window, 'time : ' + tm, 4, 26, (255, 255, 255))
         offtm = 0
         for t in segments :
             
             offtm += 1
             if offtm < 10 :
-                tms = str(t)[:-1]
+                tms = str(t)
                 alpha = 255 / (offtm)
-                display_text_min_alpha(window, tms, 4, 50 + offtm * 12, (255, 200, 0), alpha)
+                display_text_min_alpha(window, tms, 4, 48 + offtm * 12, (255, 200, 0), alpha)
             
         
         # frame buffer ?
@@ -316,7 +300,7 @@ def menu() :
 
 
 while True :
-    run_end = str ( get_time())[:-1] # arrondi au centieme
+    run_end = add_segment("end") # arrondi au centieme
 
     retVal = menu()
 
@@ -354,7 +338,7 @@ while True :
 
         drawTexture(window, textTexture, coordText)
         
-        display_text(window, 'time : ' + run_end, coordText.x, coordText.y + 32, color)
+        display_text(window, 'time : ' + str(run_end), coordText.x, coordText.y + 32, color)
 
         pygame.display.flip()
 
