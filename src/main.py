@@ -2,12 +2,15 @@
 import pygame
 from queue import Queue
 
-from globaldefines import *
-from IAPlayer import *
+
 
 
 # init sdl
 pygame.init()
+
+from globaldefines import *
+from IAPlayer import *
+
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("-#- Space Shooter -#-")
 
@@ -15,7 +18,6 @@ clock = pygame.time.Clock()
 
 # textures 
 from Textures import *
-
 
 
 # struct
@@ -62,10 +64,18 @@ def main() :
     running = True
     currentEnemy = bossAndAddQueue.get()
 
+    ########### TIMING
+    start_timer() # init du debut de la run
+
+    ###########
+
+
     while running :
         # time since last frame, should be 1/FPS
         # or less of the game is lagging
         dt = clock.tick(FPS)
+
+        #timeT = createTextTexture('Time : ' + str(pygame.time.get_ticks() * 0.001), './res/Fonts/kenvector_future_thin.ttf', 30, (255, 255, 255))
 
         for event in pygame.event.get() :
             if event.type == pygame.QUIT :
@@ -83,6 +93,8 @@ def main() :
                         keys['right'] = True
                     elif event.key == pygame.K_a :
                         keys['fire'] = True
+                    elif event.key == pygame.K_RETURN :
+                        add_segment("enter segment") # TODO REMOVE
                 elif event.type == pygame.KEYUP :
                     if event.key == pygame.K_UP :
                         keys['up'] = False
@@ -130,9 +142,12 @@ def main() :
         if(currentEnemy.lifeBar.life <= 0) :
             if(not bossAndAddQueue.empty()) :
                 currentEnemy = bossAndAddQueue.get()
+                ### segment time
+
                 pass
             else :                
                 return 'playerWon'
+                ### final time 
 
         # blit order is important
         for laser in lasers :
@@ -153,6 +168,19 @@ def main() :
         for powerupParts in powerup_particles :
             powerupParts.render(window)
 
+        #window.blit(timeT, )
+        tm = str ( get_time())[:-1] # arrondi au centieme
+        display_text(window, 'time : ' + tm, 4, 26, (255, 255, 255))
+        offtm = 0
+        for t in segments :
+            
+            offtm += 1
+            if offtm < 10 :
+                tms = str(t)[:-1]
+                alpha = 255 / (offtm)
+                display_text_min_alpha(window, tms, 4, 50 + offtm * 12, (255, 200, 0), alpha)
+            
+        
         # frame buffer ?
         pygame.display.flip()
 
@@ -272,6 +300,8 @@ def menu() :
 
 
 while True :
+    run_end = str ( get_time())[:-1] # arrondi au centieme
+
     retVal = menu()
 
     textTexture = None
@@ -279,13 +309,16 @@ while True :
     frameCount = 0
     background = textures['BACKGROUND']
 
+    color = (200, 0, 0)
+
     if(retVal == 'playerQuit') :
         quit()
     elif (retVal == 'playerWon') :
         textTexture = createTextTexture('You WON !!', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
+        color = (0, 200, 0)
     elif (retVal == 'playerLost') :
         textTexture = createTextTexture('You lost', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
-          
+    
     coordTextStart = pygame.math.Vector2(-500, CENTERY)
     coordMiddleText = pygame.math.Vector2(CENTERX - 75, CENTERY)
 
@@ -305,6 +338,8 @@ while True :
 
         drawTexture(window, textTexture, coordText)
         
+        display_text(window, 'time : ' + run_end, coordText.x, coordText.y + 32, color)
+
         pygame.display.flip()
 
         for event in pygame.event.get() :

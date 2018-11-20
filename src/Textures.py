@@ -55,6 +55,13 @@ def blit_alpha(target, source, location, opacity):
     temp.set_alpha(opacity)        
     target.blit(temp, location)
 
+def display_text_min_alpha(window, text, x, y, col, alpha) :
+    img = font_min.render(text, True, col)
+    drect = img.get_rect()
+    drect.left = x
+    drect.top = y
+    blit_alpha(window, img, drect, alpha)
+
 def drawRoundedRect(surface,rect,color,radius=0.4):
     rect         = pygame.Rect(rect)
     color        = pygame.Color(*color)

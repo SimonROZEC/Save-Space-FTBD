@@ -16,6 +16,13 @@ try:
 except NameError:
     xrange = range
 
+font = pygame.font.Font("./res/Fonts/kenvector_future_thin.ttf", 30)
+font_min = pygame.font.Font("./res/Fonts/kenvector_future_thin.ttf", 14)
+
+run_start = 0
+segments = []
+last_segment = 0
+
 # methode securise pour lerp un point
 def target_point(start, target, speed) :
     d = (target - start) * speed
@@ -29,3 +36,33 @@ def target_point(start, target, speed) :
 
 def dist_to_point(start, target) :
     return (target-start).length()
+
+def display_text(window, text, x, y, col) :
+    img = font.render(text, True, col)
+    drect = img.get_rect()
+    drect.left = x
+    drect.top = y
+    window.blit(img, drect)
+
+def display_text_min(window, text, x, y, col) :
+    img = font_min.render(text, True, col)
+    drect = img.get_rect()
+    drect.left = x
+    drect.top = y
+    window.blit(img, drect)
+
+
+
+def start_timer() :
+    global run_start
+    run_start = pygame.time.get_ticks() * 0.001
+    last_segment = run_start
+
+def get_time() :
+    return pygame.time.get_ticks() * 0.001 - run_start
+
+def add_segment(name) :
+    global last_segment
+    time = get_time()
+    segments.insert(0, name + " : " + str(time))
+    last_segment = time
