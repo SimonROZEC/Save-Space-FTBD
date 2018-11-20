@@ -35,7 +35,20 @@ class IAPlayer():
                 vecLaser = pygame.math.Vector2( laser.collider.getX(), laser.collider.getY() )
                 angle = (angle + NULLVEC.angle_to(vecPlayer - vecLaser)) * 0.5
                 lastVec = vecLaser
+    #TODO
+    # pickup energy
+    # when shielded can ignore lasers
 
+        goodPu = None
+        for( pu in self.powerup ) :
+            if( goodPu == None ) :
+                goodPu = pu
+                pass
+
+            if( pu.collider.getY() < 300 ) :
+                pass
+
+            #if( pygame.math.Vector2(pu.collider.getX(), pu.collider.getX()).length() < goodPu.collider.get )
 
         if( angle != 0 ) :
             

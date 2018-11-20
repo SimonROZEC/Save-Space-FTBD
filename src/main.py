@@ -141,6 +141,7 @@ def main() :
         if(currentEnemy.lifeBar.life <= 0) :
             if(not bossAndAddQueue.empty()) :
                 currentEnemy = bossAndAddQueue.get()
+                print('One boss done')
                 pass
             else :                
                 return 'playerWon'
