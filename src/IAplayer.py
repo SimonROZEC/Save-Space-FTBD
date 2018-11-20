@@ -5,8 +5,9 @@ from Collider import *
 from globaldefines import *
 
 class IAPlayer():
-    def __init__(self, player) :
+    def __init__(self, player, powerups) :
         self.player = player
+        self.powerup = powerups
         self.IACollider = Collider(self.player, 70, pygame.math.Vector2(50, 40))
     
 
@@ -16,11 +17,12 @@ class IAPlayer():
         if( self.isPlayerBelowBoss(boss) ) :
             if(self.player.energybar.energy > 0 and boss.shieldcd <= 0 ) :
                 inputs['fire'] = True
-        else :            
-            if( (boss.colliders[1].getX()-self.player.collider.getX()) > 0 ) :
-                inputs['right'] = True
-            else :
-                inputs['left'] = True
+        else :  
+            if ( self.player.vel.length() < 1 and self.player.vel.length() > -1 ) :         
+                if ( (boss.colliders[1].getX() - self.player.collider.getX()) > 0 ) :
+                    inputs['right'] = True
+                else :
+                    inputs['left'] = True
 
         vecPlayer = pygame.math.Vector2( self.player.collider.getX(), self.player.collider.getY() )
         lastVec = None
@@ -33,6 +35,7 @@ class IAPlayer():
                 vecLaser = pygame.math.Vector2( laser.collider.getX(), laser.collider.getY() )
                 angle = (angle + NULLVEC.angle_to(vecPlayer - vecLaser)) * 0.5
                 lastVec = vecLaser
+
 
         if( angle != 0 ) :
             
@@ -64,12 +67,8 @@ class IAPlayer():
                 inputs['left'] = True
                 inputs['right'] = True if inputs['right'] else False
             
-            print( vecPlayer - lastVec)
+            #print( vecPlayer - lastVec)
         
-        
-         
-            
-
     def isPlayerBelowBoss(self, boss) :
         maxX = 0
         minX = 999999
