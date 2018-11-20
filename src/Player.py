@@ -6,7 +6,7 @@ from Laser import *
 from Collider import *
 from Textures import *
 
-debug = True
+debug = False
 
 OFFSET_LASER_LEFT = pygame.math.Vector2(24, 20)
 OFFSET_LASER_RIGHT = pygame.math.Vector2(99-24, 20)
@@ -235,9 +235,8 @@ class Player(pygame.sprite.Sprite):
 
         if debug :
             self.collider.render(window)
-            
-        if self.shieldcd > 0 :
-            self.shield_collider.render(window)
+            if self.shieldcd > 0 :
+                self.shield_collider.render(window)
     
     def doDeath(self, window) :
         print('you dead bro')

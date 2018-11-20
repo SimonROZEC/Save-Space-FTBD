@@ -146,6 +146,8 @@ def phase3_update(self, boss) :
             self.count += 1
             if self.count % 6 == 0 :
                 boss.give_powerup(self.pu_pos, 'PU_SHIELD')
+            if (self.count+1) % 3 == 0:
+                boss.give_powerup(self.pu_pos, 'PU_ENERGY')
         else :
             if self.delay < FPS*0.5 and self.time % 8 == 0:
                 boss.fire(0.15, boss.player.pos)
