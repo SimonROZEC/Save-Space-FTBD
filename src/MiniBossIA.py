@@ -85,7 +85,7 @@ def phase2_update(self, boss) :
         boss.give_powerup(boss.pos + (uniform(-100, 100), uniform(100, 200)), get_random_type())
 
     if self.time % FPS * 4 == 0 :
-      boss.create_shield(120)
+      pass #boss.create_shield(120)
     #pass
 
 def phase2_render(self, window) :
