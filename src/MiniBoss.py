@@ -87,7 +87,7 @@ class MiniBoss(pygame.sprite.Sprite):
         self.shieldcd = duration
         self.shield_duration = duration
 
-    def create_shield(self, duration) : # si un shield existe déjà, ne reset pas le cd
+    def create_shield(self, duration) : # si un shield existe deja, ne reset pas le cd
         if self.shieldcd > 0 :
           return
         self.shieldcd = duration

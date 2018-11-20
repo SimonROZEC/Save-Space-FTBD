@@ -92,11 +92,7 @@ class Player(pygame.sprite.Sprite):
         self.shield_duration = 3 * FPS
 
         self.collider = Collider(self, 32, pygame.math.Vector2(50, 40))
-<<<<<<< HEAD
-      
-=======
         self.shield_collider = Collider(self, 64, pygame.math.Vector2(50, 40))
->>>>>>> 35dcfce1ee0a2e6842e64ca68ac402686b9410f0
 
         self.lifebar = PlayerLifebar(hasLifeBar)
         self.energybar = PlayerEnergybar(hasLifeBar)
@@ -239,13 +235,10 @@ class Player(pygame.sprite.Sprite):
 
         if debug :
             self.collider.render(window)
-<<<<<<< HEAD
-                
-=======
-            if self.shieldcd > 0 :
-                self.shield_collider.render(window)
+            
+        if self.shieldcd > 0 :
+            self.shield_collider.render(window)
     
->>>>>>> 35dcfce1ee0a2e6842e64ca68ac402686b9410f0
     def doDeath(self, window) :
         print('you dead bro')
         pass

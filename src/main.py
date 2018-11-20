@@ -73,6 +73,7 @@ def main() :
             if event.type == pygame.QUIT :
                 return 'playerQuit'
             elif(not PLAYER_IS_IA) :
+                
                 if event.type == pygame.KEYDOWN :
                     if event.key == pygame.K_UP :
                         keys['up'] = True
@@ -96,8 +97,15 @@ def main() :
                     elif event.key == pygame.K_a :
                         keys['fire'] = False
                         
-        if(PLAYER_IS_IA) :              
-            ia.processInput(currentEnemy, keys)
+        if(PLAYER_IS_IA) : 
+            keys =  {
+                'up'   : False,
+                'down' : False,
+                'left' : False,
+                'right': False,
+                'fire' : False
+            }             
+            ia.processInput(currentEnemy, lasers, keys)
 
         # move back ground according to player poss
         offx = - player.pos.x * 0.125
@@ -140,14 +148,12 @@ def main() :
 
         for laserParts in laser_particles :
             laserParts.render(window)
-<<<<<<< HEAD
       
         if(PLAYER_IS_IA) :
             ia.debug(window)
-=======
+
         for powerupParts in powerup_particles :
             powerupParts.render(window)
->>>>>>> 35dcfce1ee0a2e6842e64ca68ac402686b9410f0
 
         # frame buffer ?
         pygame.display.flip()
