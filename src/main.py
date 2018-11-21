@@ -158,13 +158,15 @@ def main() :
             laser.render(window)
         for powerup in powerups :
             powerup.render(window)
-        
-        player.render(window)
 
         for enemy in enemies :
             enemy.render(window)
 
         currentEnemy.render(window)
+        
+        player.render(window)
+
+        
 
         for laserParts in laser_particles :
             laserParts.render(window)

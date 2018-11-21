@@ -15,6 +15,9 @@ debug = False
 
 OFFSET_LASER = pygame.math.Vector2(0, 20)
 
+OFFSET_LASER_LEFT = pygame.math.Vector2(-40, 90)
+OFFSET_LASER_RIGHT = pygame.math.Vector2(40, 90)
+
 from BossIA import states
 
 class Boss(pygame.sprite.Sprite):
@@ -45,6 +48,8 @@ class Boss(pygame.sprite.Sprite):
         self.enemies = enemies
 
         self.lifeBar = BossLifeBar(1000)
+
+        self.altern = False
 
         self.shieldcd = 0
         self.shield_duration = 0
@@ -80,13 +85,50 @@ class Boss(pygame.sprite.Sprite):
             laser = Laser(self, pos, radians(a) + pi, 0.5, 1000, 1.5, precision)
         self.lasers.append(laser)
     
+    def doublefire(self, precision = 0.05, target = None)  :
+        posl = self.pos + OFFSET_LASER_LEFT
+        posr = self.pos + OFFSET_LASER_RIGHT
+        laserl = None
+        laserr = None
+        if target == None :
+            laserl = Laser(self, posl, pi*0.5, 0.5, 1000, 1.5, precision)
+            laserr = Laser(self, posr, pi*0.5, 0.5, 1000, 1.5, precision)
+        else :
+            a = NULLVEC.angle_to(posl - target)
+            laserl = Laser(self, posl, radians(a) + pi, 0.5, 1000, 1.5, precision)
+            a = NULLVEC.angle_to(posr - target)
+            laserr = Laser(self, posr, radians(a) + pi, 0.5, 1000, 1.5, precision)
+        self.lasers.append(laserl)
+        self.lasers.append(laserr)
+
+    def alternfire(self, precision = 0.05, target = None)  :
+        self.altern = not self.altern
+        if self.altern :
+          posr = self.pos + OFFSET_LASER_RIGHT
+          laserr = None
+          if target == None :
+              laserr = Laser(self, posr, pi*0.5, 0.5, 1000, 1.5, precision)
+          else :
+              a = NULLVEC.angle_to(posr - target)
+              laserr = Laser(self, posr, radians(a) + pi, 0.5, 1000, 1.5, precision)
+          self.lasers.append(laserr)
+        else :
+          posl = self.pos + OFFSET_LASER_LEFT
+          laserl = None
+          if target == None :
+              laserl = Laser(self, posl, pi*0.5, 0.5, 1000, 1.5, precision)
+          else :
+              a = NULLVEC.angle_to(posl - target)
+              laserl = Laser(self, posl, radians(a) + pi, 0.5, 1000, 1.5, precision)
+          self.lasers.append(laserl)
+          
     # def __init__(self, owner, pos, speed, firerate, health, target = None, endstop = False) :
     def spawn_enemy(self, pos, target = None)  :
         enemy = None
         if target == None :
-            enemy = Enemy(self, pos, 0.4, 30, 2000)
+            enemy = Enemy(self, pos, 0.4, FPS, 1000)
         else :
-            enemy = Enemy(self, pos, 0.4, 30, 1000, target, True)
+            enemy = Enemy(self, pos, 0.4, FPS, 2000, target, True)
         self.enemies.append(enemy)
         return enemy
 

@@ -24,13 +24,24 @@ class Enemy(pygame.sprite.Sprite):
         self.endstop = endstop # le vaisseau s'arrête après avoir atteint sa target
         self.target = target
 
+        self.firerate = firerate
         self.health = health
         self.dead = False
-        
+        self.lasers = owner.lasers
         self.scale = 1
         self.time = 0
         self.anim = 0
         self.collider = Collider(self, 42, pygame.math.Vector2(0, 0))
+    
+    def fire(self, precision = 0.05, target = None)  :
+        pos = self.pos + (0, 0)
+        laser = None
+        if target == None :
+            laser = Laser(self, pos, pi*0.5, 0.5, 1000, 1.5, precision)
+        else :
+            a = NULLVEC.angle_to(pos - target)
+            laser = Laser(self, pos, radians(a) + pi, 0.5, 1000, 1.5, precision)
+        self.lasers.append(laser)
 
     def update(self, dt, enemies, lasers, player) :
         if self.pos.y > HEIGHT + texturesOffsets['ENEMY_SHIP'].y * 2 :
@@ -44,6 +55,9 @@ class Enemy(pygame.sprite.Sprite):
             self.vel.x = cos(float(self.time) / 100.0) * 0.15
             self.vel.y = cos(float(self.time) / 50.0) * 0.15
             self.pos += self.vel
+            if self.time % (self.firerate+randint(0, 10)) == 0 :
+              self.fire(0.1, player.pos)
+
         else :# go to target
           self.time = 0
           self.target_point(self.target, self.speed * 0.05)
