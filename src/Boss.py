@@ -9,6 +9,7 @@ from Laser import *
 from Powerup import *
 from Collider import *
 from Textures import *
+from Enemy import *
 
 debug = False
 
@@ -17,7 +18,7 @@ OFFSET_LASER = pygame.math.Vector2(0, 20)
 from BossIA import states
 
 class Boss(pygame.sprite.Sprite):
-    def __init__(self, lasers, powerups, player) :
+    def __init__(self, lasers, powerups, player, enemies) :
         pygame.sprite.Sprite.__init__(self)
 
         self.type = 'MINIBOSS'
@@ -41,6 +42,7 @@ class Boss(pygame.sprite.Sprite):
         self.lasers = lasers
         self.powerups = powerups
         self.player = player
+        self.enemies = enemies
 
         self.lifeBar = BossLifeBar(1000)
 
@@ -77,6 +79,16 @@ class Boss(pygame.sprite.Sprite):
             a = NULLVEC.angle_to(pos - target)
             laser = Laser(self, pos, radians(a) + pi, 0.5, 1000, 1.5, precision)
         self.lasers.append(laser)
+    
+    # def __init__(self, owner, pos, speed, firerate, health, target = None, endstop = False) :
+    def spawn_enemy(self, pos, target = None)  :
+        enemy = None
+        if target == None :
+            enemy = Enemy(self, pos, 0.4, 30, 2000)
+        else :
+            enemy = Enemy(self, pos, 0.4, 30, 1000, target, True)
+        self.enemies.append(enemy)
+        return enemy
 
     def give_powerup(self, target, type) :
         self.powerups.append(Powerup(self.pos, target, type))

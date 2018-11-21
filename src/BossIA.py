@@ -6,7 +6,6 @@ from random import *
 from MiniBoss import BossState
 from Powerup import *
 
-
 # Scene setup
 def start_init(self, boss) :
   self.pos = pygame.math.Vector2(CENTERX, 140)
@@ -27,6 +26,7 @@ def start_end(self, boss) :
       boss.set_state('phase1')
     pass
 
+#################################################################################################
 #################################################################################################
 # First state, pos boss onto the right coords
 def phase1_init(self, boss) :
@@ -84,6 +84,7 @@ def phase1_end(self, boss) :
     pass
 
 #################################################################################################
+#################################################################################################
 # Second state, pos boss onto the right coords
 def phase2_init(self, boss) :
     self.angle = -pi * 0.5
@@ -125,48 +126,53 @@ def phase2_end(self, boss) :
     pass
 
 #################################################################################################
+#################################################################################################
 def phase3_init(self, boss) :
     self.time = 0
     self.points = [
-        pygame.math.Vector2(CENTERX, WIDTH - CENTERX * 0.4),
-        pygame.math.Vector2(CENTERX * 0.4, 128),
-        pygame.math.Vector2(WIDTH - CENTERX * 0.4, 128)
+        pygame.math.Vector2(CENTERX, CENTERY),
+        pygame.math.Vector2(CENTERX * 0.4, CENTERY - 64),
+        pygame.math.Vector2(WIDTH - CENTERX * 0.4, CENTERY - 64)
     ]
-    self.pu_pos = pygame.math.Vector2(CENTERX, 304)
+    self.boss_pos = pygame.math.Vector2(CENTERX, 140)
     self.target = 0
     self.delay = FPS
     self.count = 0
 
+    self.protectors = []
+    self.shielded = False
+    
+
 # Third state, pos boss onto the right coords
 def phase3_prepare(self, boss) :
+
+    if not self.shielded :
+      boss.create_shield(FPS * 2000)
+      self.shielded = True
     # boss.pos = boss.pos.lerp((CENTERX, 400), 0.1)
-    boss.target_point(self.points[0], 0.2)
-    d = boss.dist_to_point(self.points[0])
+    boss.target_point(self.boss_pos, 0.01)
+    d = boss.dist_to_point(self.boss_pos)
     if d < 10 :
         self.prepared = True
+        self.time = 0
+        for p in self.points :
+            self.protectors.append(boss.spawn_enemy(p - pygame.math.Vector2(0, CENTERY + 64), p))
 
 # First phase
 def phase3_update(self, boss) :
-    d = boss.dist_to_point(self.points[self.target % 3])
-    if d > 20 :
-        boss.target_point(self.points[self.target % 3], 0.2)
-    else:
-        self.delay -= 1
-
-        if self.delay <= 0 :
-            old = self.target
-            while self.target == old :
-                self.target = randint(0, 2)
-            self.delay = FPS
-            self.time = 0
-            self.count += 1
-            if self.count % 6 == 0 :
-                boss.give_powerup(self.pu_pos, 'PU_SHIELD')
-            if (self.count+1) % 3 == 0:
-                boss.give_powerup(self.pu_pos, 'PU_ENERGY')
-        else :
-            if self.delay < FPS*0.5 and self.time % 8 == 0:
-                boss.fire(0.15, boss.player.pos)
+    
+    boss.vel.x = cos(float(self.time) / 75.0) * 0.1
+    boss.vel.y = cos(float(self.time) / 50.0) * 0.1
+    
+    remshield = True
+    for p in self.protectors :
+      if not p.dead :
+        remshield = False
+        break
+    
+    if remshield and self.shielded:
+      boss.set_shield(FPS + 2)
+      self.shielded = False
 
 def phase3_render(self, window) :
     pass
@@ -176,6 +182,7 @@ def phase3_end(self, boss) :
         boss.set_state('end')
     pass
 
+#################################################################################################
 #################################################################################################
 def end_init(self, boss) :
     self.time = 0
