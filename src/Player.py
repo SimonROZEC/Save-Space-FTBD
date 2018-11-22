@@ -104,7 +104,7 @@ class Player(pygame.sprite.Sprite):
             self.lifebar.remove_life()
             self.invulframe = 30 # duree de la frame d'invulnerabilite
 
-    def update(self, keys, dt, lasers, boss, powerups) :
+    def update(self, keys, dt, lasers, boss, powerups, enemies) :
         self.time += 0.5
 
         if keys['up'] :
@@ -146,6 +146,19 @@ class Player(pygame.sprite.Sprite):
                 if self.shieldcd <= 0 :
                     self.hit()
                 break
+        
+        # enemy collision
+        for enemy in enemies :
+          collider = self.collider
+          if self.shieldcd >= 0 :
+              collider = self.shield_collider
+          if collider.collides(enemy.collider) :
+              force = self.pos + texturesOffsets['PLAYER_SHIP'] - enemy.pos
+              force.scale_to_length(1.2)
+              self.acc += force
+              if self.shieldcd <= 0 :
+                  self.hit()
+              break
 
         # laser collision
         for laser in lasers :

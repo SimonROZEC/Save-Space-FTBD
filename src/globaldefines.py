@@ -58,11 +58,14 @@ def start_timer() :
     run_start = pygame.time.get_ticks() * 0.001
     last_segment = run_start
 
+def rc(val) :
+  return round(val, 2)
 def get_time() :
-    return pygame.time.get_ticks() * 0.001 - run_start
+    return rc(pygame.time.get_ticks() * 0.001 - run_start)
 
 def add_segment(name) :
     global last_segment
-    time = get_time()
+    time = rc(get_time())
     segments.insert(0, name + " : " + str(time))
     last_segment = time
+    return time

@@ -45,6 +45,10 @@ class Powerup(pygame.sprite.Sprite):
         self.scale = 1
 
     def update(self, dt, powerups) :
+
+        if self.pos.y < -500 or self.pos.y > HEIGHT+500:
+            powerups.remove(self)
+
         if self.prepared :
             maxW = texturesOffsets['PU'][0]
             if self.pos.x < 0 + maxW  :

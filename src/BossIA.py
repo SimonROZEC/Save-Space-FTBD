@@ -6,160 +6,274 @@ from random import *
 from MiniBoss import BossState
 from Powerup import *
 
-
 # Scene setup
 def start_init(self, boss) :
-    self.start_pos = pygame.math.Vector2(CENTERX, -150)
-    self.current_pos = self.start_pos + (0, 0)
+  self.pos = pygame.math.Vector2(CENTERX, 140)
 
 def start_prepare(self, boss) :
-    boss.pos = boss.pos.lerp((CENTERX, 240), 0.015)
-    self.current_pos = self.current_pos.lerp((CENTERX, 130), 0.015)
-    if ((CENTERX, 230)-boss.pos).length() < 10 :
+    boss.target_point(self.pos, 0.02)
+    if boss.dist_to_point(self.pos) < 10 :
         self.prepared = True
-        
-    #pass
 
 def start_update(self, boss) :
-    self.current_pos = self.current_pos.lerp(self.start_pos, 0.03)
-    #pass
+    pass
 
 def start_render(self, window) :
-    coord = self.current_pos - texturesOffsets['BOSS_SHIP']
-    window.blit(textures['BOSS_SHIP'], coord)
     pass
 
 def start_end(self, boss) :
-    if self.prepared and (self.start_pos-self.current_pos).length() < 10 :
-        boss.set_state('phase1')
+    if self.prepared :
+      boss.set_state('phase1')
     pass
 
 #################################################################################################
+#################################################################################################
 # First state, pos boss onto the right coords
 def phase1_init(self, boss) :
-    self.time = 0
-
+    self.xlimit = -256
+    self.point = pygame.math.Vector2(self.xlimit, HEIGHT)
+    self.pointlimit = pygame.math.Vector2(WIDTH, 2 * HEIGHT)
+    self.salve_id = 0
+    self.pos = pygame.math.Vector2(CENTERX, 140)
+    self.speed = 24
+    self.cd = 30
 def phase1_prepare(self, boss) :
-    boss.pos = boss.pos.lerp((CENTERX, 120), 0.03)
-    if ((CENTERX, 120)-boss.pos).length() < 10 :
-        boss.give_powerup(boss.pos + (uniform(-400, 400), uniform(200, 400)), 'PU_ENERGY')
+    self.time = 0
+    boss.target_point(self.pos, 0.02)
+    if boss.dist_to_point(self.pos) < 10 :
         self.prepared = True
-    #pass
+        boss.give_powerup(boss.pos + (uniform(-100, 100), uniform(500, 600)), 'PU_ENERGY')
 
 # First phase
 def phase1_update(self, boss) :
-    boss.vel.x = sin(float(self.time) / 100.0)
-    boss.vel.y = cos(float(self.time) / 50.0)
-    if self.time % 20 == 0:
-        boss.fire(0.8)
-    if (self.time + FPS*2) % (FPS * 5) == 0 :
-        pu = 'PU_ENERGY'
-        if randint(0, 5) == 2 :
-            pu = 'PU_HEALTH'
-        boss.give_powerup(boss.pos + (uniform(-200, 200), uniform(-200, -400)), pu)
-    if (self.time+1) % (FPS * 2) == 0 :
-        boss.create_shield(FPS*3)
-    #pass
+    boss.vel.x = cos(float(self.time) / 100.0) * 0.1
+    boss.vel.y = cos(float(self.time) / 50.0) * 0.1
+    self.cd -= 1
+    if self.time % (FPS * 5) == 0:
+      boss.give_powerup(boss.pos + (uniform(-100, 100), uniform(500, 600)), 'PU_ENERGY')
+    if self.cd <= 0 :
+        if self.time % 5 == 0 :
+          boss.fire(0, self.point)
+          if self.salve_id == 2 :
+            boss.fire(0, self.pointlimit - self.point)
+
+        if self.salve_id == 0 :
+          self.point.x += self.speed
+          if self.point.x >= WIDTH - self.xlimit :
+            self.salve_id = 1
+            self.cd = 20
+        elif self.salve_id == 1 :
+          self.point.x -= self.speed
+          if self.point.x <= self.xlimit :
+            self.salve_id = 2
+            self.cd = 30
+        elif self.salve_id == 2 :
+          self.point.x += self.speed
+          if self.point.x >= WIDTH - self.xlimit * 6:
+            self.salve_id = 0
+            self.point.x = self.xlimit
+            self.cd = 50
 
 def phase1_render(self, window) :
     pass
 
 def phase1_end(self, boss) :
-    if boss.lifeBar.life * boss.lifeBar.maxLife <= 0.66 :
+    if boss.lifeBar.life * boss.lifeBar.maxLife <= 1-1/6 :
         boss.set_state('phase2')
+        add_segment("Boss 1st phase")
     pass
 
 #################################################################################################
+#################################################################################################
 # Second state, pos boss onto the right coords
+def phase2_init(self, boss) :
+    self.angle = -pi * 0.5
+    self.outpoint = (CENTERX, -32)
+    self.angledir = 1
 def phase2_prepare(self, boss) :
     # boss.pos = boss.pos.lerp((CENTERX, 400), 0.1)
-    boss.target_point((CENTERX, 400), 0.1)
-    d = boss.dist_to_point((CENTERX, 400))
-    # print('dist : ' + str(d))
+    boss.target_point(self.outpoint, 0.1)
+    d = boss.dist_to_point(self.outpoint)
     if d < 10 :
-        # print("ok" + str(self.time))
         self.prepared = True
         self.time = 0
-    #pass
 
-# First phase
 def phase2_update(self, boss) :
-    boss.vel.x = cos(float(self.time) / 100.0)
-    boss.vel.y = sin(float(self.time) / 50.0)
-    if self.time % 50 == 0:
-        boss.fire(1)
-    if self.time % 10 == 0:
-        boss.fire(0.02)
+    boss.pos.x = CENTERX + cos(self.angle) * CENTERY - 32
+    boss.pos.y = CENTERY + sin(self.angle) * CENTERY - 32
+    self.angle += pi * 0.01 * self.angledir
     
-    if self.time % (FPS * 5) == 0 :
-        boss.give_powerup(boss.pos + (uniform(-200, 200), 0), 'PU_SHIELD')
+    if self.time % (FPS * 8) == 0 :
+      self.angledir *= -1
 
-    if (self.time + FPS*2) % (FPS * 10) == 0 :
-        boss.give_powerup(boss.pos + (uniform(-200, 200), uniform(-200, -400)), 'PU_ENERGY')
-    #pass
+    if self.time % 15 == 0:
+        boss.fire(0.6, (CENTERX, CENTERY))
+    if self.time % (FPS * 5) == 0 :
+        pu = 'PU_ENERGY'
+        if randint(0, 3) == 2 :
+            pu = 'PU_HEALTH'
+        boss.give_powerup((CENTERX, CENTERY), pu)
 
 def phase2_render(self, window) :
     pass
 
 def phase2_end(self, boss) :
-    if boss.lifeBar.life * boss.lifeBar.maxLife <= 0.33 :
+    if boss.lifeBar.life * boss.lifeBar.maxLife <= 1-2/6 :
         boss.give_powerup(boss.pos + (uniform(-400, 400), uniform(-400, 100)), 'PU_ENERGY')
         boss.give_powerup(boss.pos + (uniform(-400, 400), uniform(-400, 100)), 'PU_HEALTH')
         boss.set_state('phase3')
+        add_segment("Boss 2nd phase")
     pass
 
+#################################################################################################
 #################################################################################################
 def phase3_init(self, boss) :
     self.time = 0
     self.points = [
-        pygame.math.Vector2(CENTERX, WIDTH - CENTERX * 0.4),
-        pygame.math.Vector2(CENTERX * 0.4, 128),
-        pygame.math.Vector2(WIDTH - CENTERX * 0.4, 128)
+        pygame.math.Vector2(CENTERX, CENTERY),
+        pygame.math.Vector2(CENTERX * 0.4, CENTERY - 64),
+        pygame.math.Vector2(WIDTH - CENTERX * 0.4, CENTERY - 64)
     ]
-    self.pu_pos = pygame.math.Vector2(CENTERX, 304)
+    self.boss_pos = pygame.math.Vector2(CENTERX, 140)
     self.target = 0
     self.delay = FPS
     self.count = 0
 
+    self.protectors = []
+    self.shielded = False
+    
+
 # Third state, pos boss onto the right coords
 def phase3_prepare(self, boss) :
+
+    if not self.shielded :
+      boss.create_shield(FPS * 2000)
+      self.shielded = True
     # boss.pos = boss.pos.lerp((CENTERX, 400), 0.1)
-    boss.target_point(self.points[0], 0.2)
-    d = boss.dist_to_point(self.points[0])
+    boss.target_point(self.boss_pos, 0.01)
+    d = boss.dist_to_point(self.boss_pos)
     if d < 10 :
         self.prepared = True
+        self.time = 0
+        for p in self.points :
+            self.protectors.append(boss.spawn_enemy(p - pygame.math.Vector2(0, CENTERY + 64), p))
 
 # First phase
 def phase3_update(self, boss) :
-    d = boss.dist_to_point(self.points[self.target % 3])
-    if d > 20 :
-        boss.target_point(self.points[self.target % 3], 0.2)
-    else:
-        self.delay -= 1
+    
+    boss.vel.x = cos(float(self.time) / 75.0) * 0.1
+    boss.vel.y = cos(float(self.time) / 50.0) * 0.1
+    
+    if self.shielded :
+      remshield = True
+      for p in self.protectors :
+        if not p.dead :
+          remshield = False
+          break
+      
+      if remshield and self.shielded:
+        boss.set_shield(FPS + 2)
+        self.shielded = False
 
-        if self.delay <= 0 :
-            old = self.target
-            while self.target == old :
-                self.target = randint(0, 2)
-            self.delay = FPS
-            self.time = 0
-            self.count += 1
-            if self.count % 6 == 0 :
-                boss.give_powerup(self.pu_pos, 'PU_SHIELD')
-            if (self.count+1) % 3 == 0:
-                boss.give_powerup(self.pu_pos, 'PU_ENERGY')
-        else :
-            if self.delay < FPS*0.5 and self.time % 8 == 0:
-                boss.fire(0.15, boss.player.pos)
+      if self.time % (FPS * 8) == 0 :
+        boss.doublefire(0.0, boss.player.pos)
+
+      if self.time % (FPS * 5) == 0 :
+        pu = 'PU_ENERGY'
+        if randint(0, 4) == 2 :
+            pu = 'PU_SHIELD'
+        boss.give_powerup(boss.pos + (uniform(-400, 400), uniform(250, 300)), pu)
+
+    else :
+      if self.time % (FPS * 4) < (FPS * 3) :
+        if self.time % 8 == 0 :
+          boss.doublefire(0.2, boss.player.pos)
 
 def phase3_render(self, window) :
     pass
 
 def phase3_end(self, boss) :
-    if boss.lifeBar.life <= 1 :
-        boss.set_state('end')
+    if boss.lifeBar.life * boss.lifeBar.maxLife <= 1-3/6 :
+        boss.set_state('phase4')
+        boss.give_powerup(self.boss_pos + (uniform(-50, 50), uniform(-50, 50)), 'PU_ENERGY')
+        boss.give_powerup(self.boss_pos + (uniform(-50, 50), uniform(-50, 50)), 'PU_HEALTH')
+        boss.give_powerup(self.boss_pos + (uniform(-200, 200), uniform(400, 500)), 'PU_HEALTH')
+        add_segment("Boss 3rd phase")
     pass
 
+#################################################################################################
+#################################################################################################
+def phase4_init(self, boss) :
+    self.time = 0
+    self.hidepoint = pygame.math.Vector2(CENTERX, -240)
+    self.target = 0
+    self.chargeCount = 0
+    self.left = pygame.math.Vector2(-300, 240)
+    self.right = pygame.math.Vector2(WIDTH + 300, 240)
+    self.center = pygame.math.Vector2(CENTERX, CENTERY)
+    
+# 4th state, pos boss onto the right coords
+def phase4_prepare(self, boss) :
+    boss.target_point(self.hidepoint, 0.01)
+    d = boss.dist_to_point(self.hidepoint)
+    if d < 10 :
+        boss.remove_shield()
+        self.prepared = True
+        self.time = 0
+        a = uniform(0, 2 * pi)
+        boss.pos = pygame.math.Vector2(CENTERX + cos(a + pi) * (CENTERY + 200), CENTERY + sin(a + pi) * (CENTERY + 200))
+        self.target = pygame.math.Vector2(CENTERX + cos(a) * (CENTERY + 200), CENTERY + sin(a) * (CENTERY + 200))
+        boss.doublefire(0.1, self.center)
+        if 1 == 1 :
+          boss.give_powerup(self.center, 'PU_SHIELD')
+
+# First phase
+def phase4_update(self, boss) :
+    
+    if self.chargeCount <= 2 :
+        boss.target_point(self.target, 0.014)
+        d = boss.dist_to_point(self.target)
+        if d < 20 :
+          self.chargeCount += 1
+          a = uniform(0, 2 * pi)
+          boss.pos = pygame.math.Vector2(CENTERX + cos(a + pi) * (CENTERY + 300), CENTERY + sin(a + pi) * (CENTERY + 300))
+          self.target = pygame.math.Vector2(CENTERX + cos(a) * (CENTERY + 300), CENTERY + sin(a) * (CENTERY + 300))
+          if randint(0, 3) == 1 :
+            boss.give_powerup(self.center, 'PU_SHIELD')
+    else :
+        if self.chargeCount < 10000 :
+            boss.pos = self.left + pygame.math.Vector2(0, 0)
+            self.chargeCount = 10000
+            self.time = 0
+        elif self.chargeCount == 10000 :
+            boss.target_point(self.right, 0.005)
+            d = boss.dist_to_point(self.right)
+            boss.pos.y += sin(self.time * 0.01)
+            self.time += 1
+
+            if self.time % 20 == 0 :
+              boss.alternfire(0)
+            
+            if d < 20 :
+              self.chargeCount = 0
+              a = uniform(0, 2 * pi)
+              boss.give_powerup(self.center, 'PU_ENERGY')
+              boss.pos = pygame.math.Vector2(CENTERX + cos(a + pi) * (CENTERY + 200), CENTERY + sin(a + pi) * (CENTERY + 200))
+              self.target = pygame.math.Vector2(CENTERX + cos(a) * (CENTERY + 200), CENTERY + sin(a) * (CENTERY + 200))
+
+def phase4_render(self, window) :
+    pass
+
+def phase4_end(self, boss) :
+    if boss.lifeBar.life <= 1 :
+        boss.set_state('end')
+        boss.give_powerup(self.center + (uniform(-50, 50), uniform(-50, 50)), 'PU_ENERGY')
+        boss.give_powerup(self.center + (uniform(-50, 50), uniform(-50, 50)), 'PU_HEALTH')
+        add_segment("Boss 4th phase")
+    pass
+
+#################################################################################################
+#################################################################################################
 #################################################################################################
 def end_init(self, boss) :
     self.time = 0
@@ -225,7 +339,8 @@ def states(boss) :
     return {
         'start'   : BossState(boss, start_prepare, start_update, start_end, start_render, start_init),
         'phase1' : BossState(boss, phase1_prepare, phase1_update, phase1_end, phase1_render, phase1_init),
-        'phase2' : BossState(boss, phase2_prepare, phase2_update, phase2_end, phase2_render),
+        'phase2' : BossState(boss, phase2_prepare, phase2_update, phase2_end, phase2_render, phase2_init),
         'phase3': BossState(boss, phase3_prepare, phase3_update, phase3_end, phase3_render, phase3_init),
+        'phase4': BossState(boss, phase4_prepare, phase4_update, phase4_end, phase4_render, phase4_init),
         'end' : BossState(boss, end_prepare, end_update, end_end, end_render, end_init)
     }

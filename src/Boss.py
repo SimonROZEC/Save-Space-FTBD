@@ -9,48 +9,24 @@ from Laser import *
 from Powerup import *
 from Collider import *
 from Textures import *
+from Enemy import *
 
 debug = False
 
 OFFSET_LASER = pygame.math.Vector2(0, 20)
 
-class BossState:
-    def __init__(self, boss, prepare, update, end, render, init = None) :
-        self.boss = boss
-        
-        self.p = prepare # update preparation du boss pour commencer l'etat + condition de fin de preparation
-        
-        self.u = update # mise a jour du boss pour un etat specifique
-        self.r = render # affichage d'effets graphiques specifiques a l'etat
-
-        self.e = end # condition de fin de l'etat et passage a l'etat suivant
-
-        self.time = 0
-        self.prepared = False # le boss a termine la phase de preparation de son etat
-        if not init == None :
-            init(self, boss)
-
-    def update(self):
-        self.time += 1
-        if not self.prepared :
-            self.p(self, self.boss)
-        else :
-            self.u(self, self.boss)
-        
-        self.e(self, self.boss)
-
-    def render(self, window):
-        self.r(self, window)
+OFFSET_LASER_LEFT = pygame.math.Vector2(-40, 90)
+OFFSET_LASER_RIGHT = pygame.math.Vector2(40, 90)
 
 from BossIA import states
 
 class Boss(pygame.sprite.Sprite):
-    def __init__(self, lasers, powerups, player) :
+    def __init__(self, lasers, powerups, player, enemies) :
         pygame.sprite.Sprite.__init__(self)
 
         self.type = 'MINIBOSS'
 
-        self.pos = pygame.math.Vector2(CENTERX, -40)
+        self.pos = pygame.math.Vector2(CENTERX, -120)
         self.vel = pygame.math.Vector2(0, 0)
         self.acc = pygame.math.Vector2(0, 0)
         self.image = textures['BOSS_SHIP']
@@ -69,8 +45,11 @@ class Boss(pygame.sprite.Sprite):
         self.lasers = lasers
         self.powerups = powerups
         self.player = player
+        self.enemies = enemies
 
         self.lifeBar = BossLifeBar(1000)
+
+        self.altern = False
 
         self.shieldcd = 0
         self.shield_duration = 0
@@ -105,6 +84,53 @@ class Boss(pygame.sprite.Sprite):
             a = NULLVEC.angle_to(pos - target)
             laser = Laser(self, pos, radians(a) + pi, 0.5, 1000, 1.5, precision)
         self.lasers.append(laser)
+    
+    def doublefire(self, precision = 0.05, target = None)  :
+        posl = self.pos + OFFSET_LASER_LEFT
+        posr = self.pos + OFFSET_LASER_RIGHT
+        laserl = None
+        laserr = None
+        if target == None :
+            laserl = Laser(self, posl, pi*0.5, 0.5, 1000, 1.5, precision)
+            laserr = Laser(self, posr, pi*0.5, 0.5, 1000, 1.5, precision)
+        else :
+            a = NULLVEC.angle_to(posl - target)
+            laserl = Laser(self, posl, radians(a) + pi, 0.5, 1000, 1.5, precision)
+            a = NULLVEC.angle_to(posr - target)
+            laserr = Laser(self, posr, radians(a) + pi, 0.5, 1000, 1.5, precision)
+        self.lasers.append(laserl)
+        self.lasers.append(laserr)
+
+    def alternfire(self, precision = 0.05, target = None)  :
+        self.altern = not self.altern
+        if self.altern :
+          posr = self.pos + OFFSET_LASER_RIGHT
+          laserr = None
+          if target == None :
+              laserr = Laser(self, posr, pi*0.5, 0.5, 1000, 1.5, precision)
+          else :
+              a = NULLVEC.angle_to(posr - target)
+              laserr = Laser(self, posr, radians(a) + pi, 0.5, 1000, 1.5, precision)
+          self.lasers.append(laserr)
+        else :
+          posl = self.pos + OFFSET_LASER_LEFT
+          laserl = None
+          if target == None :
+              laserl = Laser(self, posl, pi*0.5, 0.5, 1000, 1.5, precision)
+          else :
+              a = NULLVEC.angle_to(posl - target)
+              laserl = Laser(self, posl, radians(a) + pi, 0.5, 1000, 1.5, precision)
+          self.lasers.append(laserl)
+          
+    # def __init__(self, owner, pos, speed, firerate, health, target = None, endstop = False) :
+    def spawn_enemy(self, pos, target = None)  :
+        enemy = None
+        if target == None :
+            enemy = Enemy(self, pos, 0.4, FPS, 1000)
+        else :
+            enemy = Enemy(self, pos, 0.4, FPS, 2000, target, True)
+        self.enemies.append(enemy)
+        return enemy
 
     def give_powerup(self, target, type) :
         self.powerups.append(Powerup(self.pos, target, type))

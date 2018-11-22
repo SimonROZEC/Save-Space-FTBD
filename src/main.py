@@ -9,7 +9,7 @@ from queue import Queue
 pygame.init()
 
 from globaldefines import *
-from IAPlayer import *
+from IAplayer import *
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("-#- Space Shooter -#-")
@@ -28,12 +28,14 @@ from MiniBoss import *
 from Boss import *
 from Laser import *
 from Powerup import *
+from Enemy import *
 
 ##
 # Return false if game was closed py player, true if player lost
 #
 def main() :   
     lasers = []
+    enemies = []
     powerups = []
     bossAndAddQueue = Queue()
 
@@ -50,11 +52,17 @@ def main() :
 
     # IA
     ia = IAPlayer(player, powerups)
-    PLAYER_IS_IA = True
+    PLAYER_IS_IA = False
 
+<<<<<<< HEAD
     
     bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
     bossAndAddQueue.put(Boss(lasers, powerups, player))
+=======
+    bossAndAddQueue.put(Boss(lasers, powerups, player, enemies))
+    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
+    
+>>>>>>> cf226b5cc0b1939677754c5deb7abb6e9d6beabe
     #bossAndAddQueue.put(Meteorite())
     #bossAndAddQueue.put(Boss(lasers, player))
 
@@ -126,12 +134,14 @@ def main() :
                 window.blit(background, (x+offx, y+backgroundOffset%256))
 
         # for each laser check if should die
+        for enemy in enemies :
+            enemy.update(dt, enemies, lasers, player)
         for laser in lasers :
             laser.update(dt, lasers)
         for powerup in powerups :
             powerup.update(dt, powerups)
 
-        player.update(keys, dt, lasers, currentEnemy, powerups)
+        player.update(keys, dt, lasers, currentEnemy, powerups, enemies)
         
         currentEnemy.update(dt)
         
@@ -142,7 +152,12 @@ def main() :
         if(currentEnemy.lifeBar.life <= 0) :
             if(not bossAndAddQueue.empty()) :
                 currentEnemy = bossAndAddQueue.get()
+<<<<<<< HEAD
                 print('One boss done')
+=======
+                ### segment time
+
+>>>>>>> cf226b5cc0b1939677754c5deb7abb6e9d6beabe
                 pass
             else :                
                 return 'playerWon'
@@ -154,9 +169,14 @@ def main() :
         for powerup in powerups :
             powerup.render(window)
 
-        player.render(window)
+        for enemy in enemies :
+            enemy.render(window)
 
         currentEnemy.render(window)
+        
+        player.render(window)
+
+        
 
         for laserParts in laser_particles :
             laserParts.render(window)
@@ -168,16 +188,16 @@ def main() :
             powerupParts.render(window)
 
         #window.blit(timeT, )
-        tm = str ( get_time())[:-1] # arrondi au centieme
+        tm = str ( get_time()) # arrondi au centieme
         display_text(window, 'time : ' + tm, 4, 26, (255, 255, 255))
         offtm = 0
         for t in segments :
             
             offtm += 1
             if offtm < 10 :
-                tms = str(t)[:-1]
+                tms = str(t)
                 alpha = 255 / (offtm)
-                display_text_min_alpha(window, tms, 4, 50 + offtm * 12, (255, 200, 0), alpha)
+                display_text_min_alpha(window, tms, 4, 48 + offtm * 12, (255, 200, 0), alpha)
             
         
         # frame buffer ?
@@ -299,10 +319,8 @@ def menu() :
 
 
 while True :
-    run_end = str ( get_time())[:-1] # arrondi au centieme
-
     retVal = menu()
-
+    run_end = add_segment("end") # arrondi au centieme
     textTexture = None
 
     frameCount = 0
@@ -337,7 +355,7 @@ while True :
 
         drawTexture(window, textTexture, coordText)
         
-        display_text(window, 'time : ' + run_end, coordText.x, coordText.y + 32, color)
+        display_text(window, 'time : ' + str(run_end), coordText.x, coordText.y + 32, color)
 
         pygame.display.flip()
 
