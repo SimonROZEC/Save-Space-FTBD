@@ -40,12 +40,12 @@ class IAPlayer():
     # when shielded can ignore lasers
 
         goodPu = None
-        for( pu in self.powerup ) :
-            if( goodPu == None ) :
+        for pu in self.powerup :
+            if goodPu == None :
                 goodPu = pu
                 pass
 
-            if( pu.collider.getY() < 300 ) :
+            if pu.collider.getY() < 300 :
                 pass
 
             #if( pygame.math.Vector2(pu.collider.getX(), pu.collider.getX()).length() < goodPu.collider.get )
