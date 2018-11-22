@@ -53,16 +53,10 @@ def main() :
     # IA
     ia = IAPlayer(player, powerups)
     PLAYER_IS_IA = False
-
-<<<<<<< HEAD
     
-    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
-    bossAndAddQueue.put(Boss(lasers, powerups, player))
-=======
     bossAndAddQueue.put(Boss(lasers, powerups, player, enemies))
     bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
     
->>>>>>> cf226b5cc0b1939677754c5deb7abb6e9d6beabe
     #bossAndAddQueue.put(Meteorite())
     #bossAndAddQueue.put(Boss(lasers, player))
 
@@ -73,6 +67,7 @@ def main() :
     currentEnemy = bossAndAddQueue.get()
 
     ########### TIMING
+    clear_segments()
     start_timer() # init du debut de la run
 
     ###########
@@ -152,12 +147,9 @@ def main() :
         if(currentEnemy.lifeBar.life <= 0) :
             if(not bossAndAddQueue.empty()) :
                 currentEnemy = bossAndAddQueue.get()
-<<<<<<< HEAD
                 print('One boss done')
-=======
                 ### segment time
 
->>>>>>> cf226b5cc0b1939677754c5deb7abb6e9d6beabe
                 pass
             else :                
                 return 'playerWon'
@@ -192,21 +184,18 @@ def main() :
         display_text(window, 'time : ' + tm, 4, 26, (255, 255, 255))
         offtm = 0
         for t in segments :
-            
             offtm += 1
             if offtm < 10 :
                 tms = str(t)
                 alpha = 255 / (offtm)
                 display_text_min_alpha(window, tms, 4, 48 + offtm * 12, (255, 200, 0), alpha)
-            
-        
+
         # frame buffer ?
         pygame.display.flip()
 
     ## TODO
     # faire une anim de fin de vie pour le joueur
     player.doDeath(window)
-
     return 'playerLost'
 
 #

@@ -113,7 +113,7 @@ class Player(pygame.sprite.Sprite):
             self.acc.y = 0.04
         else :
             self.acc.y = 0
-            self.vel.y *= 0.90
+            self.vel.y *= 0.85
 
         if keys['right']:
             self.acc.x = 0.1
@@ -121,7 +121,7 @@ class Player(pygame.sprite.Sprite):
             self.acc.x = -0.1
         else :
             self.acc.x = 0
-            self.vel.x *= 0.90
+            self.vel.x *= 0.85
 
         # window border forcefield
         if (self.pos.x < 0) :

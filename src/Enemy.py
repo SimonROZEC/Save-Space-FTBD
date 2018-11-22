@@ -21,7 +21,7 @@ class Enemy(pygame.sprite.Sprite):
         self.image = textures['ENEMY_SHIP']
         self.speed = speed
         self.targeted = True if target == None else False
-        self.endstop = endstop # le vaisseau s'arrête après avoir atteint sa target
+        self.endstop = endstop # le vaisseau s'arrete apres avoir atteint sa target
         self.target = target
 
         self.firerate = firerate

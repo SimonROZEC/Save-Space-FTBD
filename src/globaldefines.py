@@ -69,3 +69,7 @@ def add_segment(name) :
     segments.insert(0, name + " : " + str(time))
     last_segment = time
     return time
+
+def clear_segments() :
+    global segments
+    del segments[:]
