@@ -5,7 +5,7 @@ from math import *
 from random import *
 from MiniBoss import BossState
 from Powerup import *
-
+#
 
 # Scene setup
 def start_init(self, boss) :
@@ -184,7 +184,9 @@ def end_prepare(self, boss) :
     d = boss.dist_to_point(self.center)
     if d < 10 :
         self.prepared = True
-        for i in xrange(0, 8) :
+        boss.give_powerup(boss.pos + (uniform(-200, 200), uniform(-200, 100)), 'PU_HEALTH')
+        boss.give_powerup(boss.pos + (uniform(-200, 200), uniform(-200, 100)), 'PU_HEALTH')
+        for i in xrange(0, 6) :
             pu = 'PU_ENERGY'
             if randint(0, 1) == 0 :
                 pu = 'PU_HEALTH'

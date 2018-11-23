@@ -7,6 +7,7 @@ from random import *
 from Collider import *
 from Textures import *
 from Laser import *
+from Powerup import *
 
 debug = False
 
@@ -51,6 +52,8 @@ class Enemy(pygame.sprite.Sprite):
         if self.targeted :
           if not self.endstop :
             self.pos += self.vel * dt # move down
+            if self.time % ((self.firerate) * 4) == 0 :
+              self.fire(0.1, player.pos)
           else : # Idle
             self.vel.x = cos(float(self.time) / 100.0) * 0.15
             self.vel.y = cos(float(self.time) / 50.0) * 0.15
@@ -64,6 +67,7 @@ class Enemy(pygame.sprite.Sprite):
           d = self.dist_to_point(self.target)
           if d < 10 :
               self.targeted = True
+          
         self.time += 1
 
         # check collisions
@@ -78,6 +82,16 @@ class Enemy(pygame.sprite.Sprite):
                         lasers.append(l)
                         l.destroy(lasers)
                     self.destroy(enemies)
+
+                    if self.target == None :
+                        pu = 'PU_ENERGY'
+                        if randint(0, 4) == 2 :
+                            pu = 'PU_SHIELD'
+                        if randint(0, 8) == 2 :
+                            pu = 'PU_HEALTH'
+                        if randint(0, 10) > 4 :
+                            self.owner.powerups.append(Powerup(self.pos, self.pos, pu))
+
                     return
 
     def render(self, window) :
