@@ -17,6 +17,9 @@ class BossLifeBar(pygame.sprite.Sprite):
             if self.life <= 0 :
                 self.life = 1
 
+    def isDead(self) :
+      return self.life <= 1
+
     def render(self, window) :
         if(self.lifeBarEnabeled) :
             drawRoundedRect(window,(0, 0, WIDTH, 24),(72, 72, 72),0.25)

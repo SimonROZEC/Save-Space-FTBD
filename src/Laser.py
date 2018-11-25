@@ -66,7 +66,7 @@ class Laser(pygame.sprite.Sprite):
 
     def update(self, dt, lasers) :
         
-        if self.lifetime <= 0 or self.pos.y < -500 or self.pos.y > HEIGHT+500:
+        if self.lifetime <= 0 or self.pos.y < -500 or self.pos.y > HEIGHT+500 or self.pos.x < -300 or self.pos.x > WIDTH + 300:
             lasers.remove(self)
 
         self.lifetime -= 1

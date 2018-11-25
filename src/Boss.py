@@ -47,7 +47,7 @@ class Boss(pygame.sprite.Sprite):
         self.player = player
         self.enemies = enemies
 
-        self.lifeBar = BossLifeBar(1000)
+        self.lifeBar = BossLifeBar(15000)
 
         self.altern = False
 
@@ -126,7 +126,7 @@ class Boss(pygame.sprite.Sprite):
     def spawn_enemy(self, pos, target = None)  :
         enemy = None
         if target == None :
-            enemy = Enemy(self, pos, 0.4, FPS, 200)
+            enemy = Enemy(self, pos, 0.4, FPS, 100)
         else :
             enemy = Enemy(self, pos, 0.4, FPS, 2000, target, True)
         self.enemies.append(enemy)

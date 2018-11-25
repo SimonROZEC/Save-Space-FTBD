@@ -133,19 +133,20 @@ class Player(pygame.sprite.Sprite):
         if (self.pos.y > 800 - 75) :
             self.acc.y = -0.1
 
-        # boss collision 
-        for c in boss.colliders :
-            collider = self.collider
-            if self.shieldcd >= 0 :
-              collider = self.shield_collider
-            if collider.collides(c) or (collider.collides(boss.shield_collider) and boss.shieldcd > 0):
-                force = self.pos + texturesOffsets['PLAYER_SHIP'] - boss.pos
+        # boss collision
+        if not boss.lifeBar.isDead() :
+          for c in boss.colliders :
+              collider = self.collider
+              if self.shieldcd >= 0 :
+                collider = self.shield_collider
+              if collider.collides(c) or (collider.collides(boss.shield_collider) and boss.shieldcd > 0):
+                  force = self.pos + texturesOffsets['PLAYER_SHIP'] - boss.pos
 
-                force.scale_to_length(2)
-                self.acc += force
-                if self.shieldcd <= 0 :
-                    self.hit()
-                break
+                  force.scale_to_length(2)
+                  self.acc += force
+                  if self.shieldcd <= 0 :
+                      self.hit()
+                  break
         
         # enemy collision
         for enemy in enemies :
