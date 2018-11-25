@@ -70,7 +70,7 @@ class MiniBoss(pygame.sprite.Sprite):
         self.powerups = powerups
         self.player = player
 
-        self.lifeBar = BossLifeBar(12000)
+        self.lifeBar = BossLifeBar(self, 12000)
 
         self.shieldcd = 0
         self.shield_duration = 0

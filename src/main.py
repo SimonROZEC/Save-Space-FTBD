@@ -29,6 +29,7 @@ from Boss import *
 from Laser import *
 from Powerup import *
 from Enemy import *
+from Asteroids import *
 
 ##
 # Return false if game was closed py player, true if player lost
@@ -49,11 +50,13 @@ def main() :
     }
 
     player = Player()
-
+    
     # IA
     ia = IAPlayer(player, powerups)
     PLAYER_IS_IA = False
     
+    
+    bossAndAddQueue.put(Asteroids(lasers, powerups, player, enemies))
     bossAndAddQueue.put(Boss(lasers, powerups, player, enemies))
     bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
     
@@ -164,9 +167,10 @@ def main() :
         for enemy in enemies :
             enemy.render(window)
 
+        player.render(window)
         currentEnemy.render(window)
         
-        player.render(window)
+        
 
         
 

@@ -20,7 +20,7 @@ textures = {
             'SHIELD' : [pygame.image.load('./res/Images/Effects/shield' + str(i) + '.png').convert_alpha() for i in range(1, 4)],
             'SMOKE' :[pygame.image.load('./res/Images/Effects/spaceEffects_' + str(i) + '.png').convert_alpha() for i in range(8, 15)],
             'ENEMY_SHIP' : pygame.image.load('./res/Images/Enemies/enemyRed1.png').convert_alpha(),
-            
+            'ASTEROID' : [pygame.image.load('./res/Images/Meteors/meteorBrown_big' + str(i) + '.png').convert_alpha() for i in range(2, 5)],
         }
 
 #approx
@@ -38,7 +38,8 @@ texturesOffsets = {
     'PU' :                      pygame.math.Vector2(17, 17),
     'PU_PARTICLE' :             pygame.math.Vector2(12, 12),
     'SHIELD' :                  pygame.math.Vector2(144 * 0.5, 137 * 0.5),
-    'ENEMY_SHIP' :              pygame.math.Vector2(46.5, 42)
+    'ENEMY_SHIP' :              pygame.math.Vector2(46.5, 42),
+    'ASTEROID' :              pygame.math.Vector2(50, 50)
 }
 
 def drawTexture(window, texture, posXY) :

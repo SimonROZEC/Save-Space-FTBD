@@ -47,7 +47,7 @@ class Boss(pygame.sprite.Sprite):
         self.player = player
         self.enemies = enemies
 
-        self.lifeBar = BossLifeBar(15000)
+        self.lifeBar = BossLifeBar(self, 18000)
 
         self.altern = False
 
