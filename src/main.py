@@ -30,6 +30,7 @@ from Laser import *
 from Powerup import *
 from Enemy import *
 from Asteroids import *
+from Upgrade import *
 
 ##
 # Return false if game was closed py player, true if player lost
@@ -38,6 +39,7 @@ def main() :
     lasers = []
     enemies = []
     powerups = []
+    upgrades = []
     bossAndAddQueue = Queue()
 
     # struct
@@ -56,7 +58,7 @@ def main() :
     PLAYER_IS_IA = False
     
     
-    bossAndAddQueue.put(Asteroids(lasers, powerups, player, enemies))
+    bossAndAddQueue.put(Asteroids(lasers, powerups, player, enemies, upgrades))
     bossAndAddQueue.put(Boss(lasers, powerups, player, enemies))
     bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
     
@@ -138,8 +140,10 @@ def main() :
             laser.update(dt, lasers)
         for powerup in powerups :
             powerup.update(dt, powerups)
+        for upgrade in upgrades :
+            upgrade.update(dt, upgrades)
 
-        player.update(keys, dt, lasers, currentEnemy, powerups, enemies)
+        player.update(keys, dt, lasers, currentEnemy, powerups, enemies, upgrades)
         
         currentEnemy.update(dt)
         
@@ -163,6 +167,8 @@ def main() :
             laser.render(window)
         for powerup in powerups :
             powerup.render(window)
+        for upgrade in upgrades :
+            upgrade.render(window)
 
         for enemy in enemies :
             enemy.render(window)
@@ -182,6 +188,8 @@ def main() :
 
         for powerupParts in powerup_particles :
             powerupParts.render(window)
+        for upgradeParts in upgrade_particles :
+            upgradeParts.render(window)
 
         #window.blit(timeT, )
         tm = str ( get_time()) # arrondi au centieme

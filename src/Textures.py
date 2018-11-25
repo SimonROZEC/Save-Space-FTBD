@@ -21,6 +21,12 @@ textures = {
             'SMOKE' :[pygame.image.load('./res/Images/Effects/spaceEffects_' + str(i) + '.png').convert_alpha() for i in range(8, 15)],
             'ENEMY_SHIP' : pygame.image.load('./res/Images/Enemies/enemyRed1.png').convert_alpha(),
             'ASTEROID' : [pygame.image.load('./res/Images/Meteors/meteorBrown_big' + str(i) + '.png').convert_alpha() for i in range(2, 5)],
+            'STATION_ECO' : pygame.image.load('./res/Images/station_eco.png').convert_alpha(),
+            'UPGRADE_ECO' : pygame.image.load('./res/Images/upgrade_eco.png').convert_alpha(),
+            'STATION_RANGE' : pygame.image.load('./res/Images/station_range.png').convert_alpha(),
+            'UPGRADE_RANGE' : pygame.image.load('./res/Images/upgrade_range.png').convert_alpha(),
+            'STATION_REACTOR' : pygame.image.load('./res/Images/station_reactor.png').convert_alpha(),
+            'UPGRADE_REACTOR' : pygame.image.load('./res/Images/upgrade_reactor.png').convert_alpha()
         }
 
 #approx
@@ -39,6 +45,8 @@ texturesOffsets = {
     'PU_PARTICLE' :             pygame.math.Vector2(12, 12),
     'SHIELD' :                  pygame.math.Vector2(144 * 0.5, 137 * 0.5),
     'ENEMY_SHIP' :              pygame.math.Vector2(46.5, 42),
+    'STATION' :              pygame.math.Vector2(330/2, 132/2),
+    'UPGRADE' :              pygame.math.Vector2(21, 21),
     'ASTEROID' :              pygame.math.Vector2(50, 50)
 }
 

@@ -104,7 +104,7 @@ class Player(pygame.sprite.Sprite):
             self.lifebar.remove_life()
             self.invulframe = 30 # duree de la frame d'invulnerabilite
 
-    def update(self, keys, dt, lasers, boss, powerups, enemies) :
+    def update(self, keys, dt, lasers, boss, powerups, enemies, upgrades) :
         self.time += 0.5
 
         if keys['up'] :
@@ -186,6 +186,15 @@ class Player(pygame.sprite.Sprite):
                 elif(powerup.type == 'PU_SHIELD'):
                     self.shieldcd = self.shield_duration
                 powerup.destroy(powerups)
+          
+          # upgrade collision
+        for upgrade in upgrades :
+            #tous les lasers qui sont pas ceux du joueur
+            if self.collider.collides(upgrade.collider) :
+                if(upgrade.type == 'ECO'):
+                    self.energybar.canrestore = True
+                    self.energybar.restore_energy(800)
+                upgrade.destroy(upgrades)
 
         self.vel += self.acc * dt
 
