@@ -16,7 +16,15 @@ debug = False
 class Station(pygame.sprite.Sprite) :
     def __init__(self, player, enemies, type, upgrades) :
         pygame.sprite.Sprite.__init__(self)
-        self.pos = pygame.math.Vector2(-300, CENTERY+uniform(-150, 50))
+
+        self.dir = 1
+        if randint(0, 10) < 5 :
+          self.dir = -1
+        if self.dir == 1 :
+          self.pos = pygame.math.Vector2(-300, CENTERY+uniform(-150, 50))
+        else :
+          self.pos = pygame.math.Vector2(WIDTH+300, CENTERY+uniform(-150, 50))
+          
         self.type = type
         self.player = player
         self.upgrades = upgrades
@@ -30,7 +38,7 @@ class Station(pygame.sprite.Sprite) :
           self.rotatespeed *= -1
 
         self.angle = 0
-        self.vel = pygame.math.Vector2(1, 0)
+        self.vel = pygame.math.Vector2(1*self.dir, 0)
     def update(self, dt, enemies, lasers, player) :
       
       if self.pos.x > WIDTH + 300 :

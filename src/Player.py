@@ -99,6 +99,10 @@ class Player(pygame.sprite.Sprite):
         self.time = 0
         self.scale = 1
 
+        self.eco = 20
+        self.range = 50
+        self.reactor = 1
+
     def hit(self) :
         if self.invulframe <= 0 :
             self.lifebar.remove_life()
@@ -108,17 +112,17 @@ class Player(pygame.sprite.Sprite):
         self.time += 0.5
 
         if keys['up'] :
-            self.acc.y = -0.1
+            self.acc.y = -0.1*self.reactor
         elif keys['down'] :
-            self.acc.y = 0.04
+            self.acc.y = 0.04*self.reactor
         else :
             self.acc.y = 0
             self.vel.y *= 0.85
 
         if keys['right']:
-            self.acc.x = 0.1
+            self.acc.x = 0.1*self.reactor
         elif keys['left']:
-            self.acc.x = -0.1
+            self.acc.x = -0.1*self.reactor
         else :
             self.acc.x = 0
             self.vel.x *= 0.85
@@ -192,8 +196,11 @@ class Player(pygame.sprite.Sprite):
             #tous les lasers qui sont pas ceux du joueur
             if self.collider.collides(upgrade.collider) :
                 if(upgrade.type == 'ECO'):
-                    self.energybar.canrestore = True
-                    self.energybar.restore_energy(800)
+                    self.eco = 15
+                if(upgrade.type == 'REACTOR'):
+                    self.reactor = 1.2
+                if(upgrade.type == 'RANGE'):
+                    self.range = 65
                 upgrade.destroy(upgrades)
 
         self.vel += self.acc * dt
@@ -207,14 +214,14 @@ class Player(pygame.sprite.Sprite):
         # create lasers
         if keys['fire'] and self.firecd <= 0:
             if self.energybar.energy > 0 :
-                self.energybar.remove_energy(20)
+                self.energybar.remove_energy(self.eco)
                 self.firecd = 8
                 speed = 1
                 if self.vel.y < 0 :
                     speed += -self.vel.y * 0.05
                 dec = 0.02 * self.vel.x
-                l1 = Laser(self, self.pos + OFFSET_LASER_LEFT, -pi*0.5+dec, speed,50)
-                l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, -pi*0.5+dec, speed, 50)
+                l1 = Laser(self, self.pos + OFFSET_LASER_LEFT, -pi*0.5+dec, speed,self.range)
+                l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, -pi*0.5+dec, speed, self.range)
                 lasers.append(l2)
                 lasers.append(l1)
 
