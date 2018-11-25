@@ -279,7 +279,7 @@ class Player(pygame.sprite.Sprite):
                 self.shield_collider.render(window)
         self.notifcd -= 1
         if self.notifcd > 0 and self.notifcd % (FPS * 0.5) > 2 :
-          window.blit(self.notif, (10, HEIGHT - 128))
+          window.blit(self.notif, (10, HEIGHT - 100))
 
     def doDeath(self, window) :
         print('you dead bro')
