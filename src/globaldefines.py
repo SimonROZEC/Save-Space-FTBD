@@ -18,6 +18,7 @@ except NameError:
 
 font = pygame.font.Font("./res/Fonts/kenvector_future_thin.ttf", 30)
 font_min = pygame.font.Font("./res/Fonts/kenvector_future_thin.ttf", 14)
+font_med = pygame.font.Font("./res/Fonts/kenvector_future_thin.ttf", 24)
 
 run_start = 0
 segments = []
@@ -42,15 +43,27 @@ def display_text(window, text, x, y, col) :
     drect = img.get_rect()
     drect.left = x
     drect.top = y
-    window.blit(img, drect)
+    if not window == None :
+      window.blit(img, drect)
+    return img
+
+def display_text_med(window, text, x, y, col) :
+    img = font_med.render(text, True, col)
+    drect = img.get_rect()
+    drect.left = x
+    drect.top = y
+    if not window == None :
+      window.blit(img, drect)
+    return img
 
 def display_text_min(window, text, x, y, col) :
     img = font_min.render(text, True, col)
     drect = img.get_rect()
     drect.left = x
     drect.top = y
-    window.blit(img, drect)
-
+    if not window == None :
+      window.blit(img, drect)
+    return img
 
 
 def start_timer() :

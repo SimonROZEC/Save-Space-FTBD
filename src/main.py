@@ -57,10 +57,9 @@ def main() :
     ia = IAPlayer(player, powerups)
     PLAYER_IS_IA = False
     
-    
+    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
     bossAndAddQueue.put(Asteroids(lasers, powerups, player, enemies, upgrades))
     bossAndAddQueue.put(Boss(lasers, powerups, player, enemies))
-    bossAndAddQueue.put(MiniBoss(lasers, powerups, player))
     
     #bossAndAddQueue.put(Meteorite())
     #bossAndAddQueue.put(Boss(lasers, player))

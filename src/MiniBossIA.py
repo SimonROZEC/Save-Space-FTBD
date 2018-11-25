@@ -185,8 +185,7 @@ def end_prepare(self, boss) :
     if d < 10 :
         self.prepared = True
         boss.give_powerup(boss.pos + (uniform(-200, 200), uniform(-200, 100)), 'PU_HEALTH')
-        boss.give_powerup(boss.pos + (uniform(-200, 200), uniform(-200, 100)), 'PU_HEALTH')
-        for i in xrange(0, 6) :
+        for i in xrange(0, 3) :
             pu = 'PU_ENERGY'
             if randint(0, 1) == 0 :
                 pu = 'PU_HEALTH'

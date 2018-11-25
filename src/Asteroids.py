@@ -136,7 +136,7 @@ class Asteroid(pygame.sprite.Sprite) :
         pass
         #self.forcefield.render(window)
 
-UPGRADE_TYPES = ['ECO', 'RANGE', 'REACTOR']
+UPGRADE_TYPES = ['ECO', 'REACTOR', 'RANGE']
 
 class Asteroids(pygame.sprite.Sprite):
     def __init__(self, lasers, powerups, player, enemies, upgrades) :
@@ -156,7 +156,7 @@ class Asteroids(pygame.sprite.Sprite):
         self.enemies = enemies
         self.time = 0
         self.lifeBar = BossLifeBar(self, FPS * 40)
-        self.diff = 30
+        self.diff = 24
 
     def give_powerup(self, target, type) :
         self.powerups.append(Powerup(self.pos, target, type))
@@ -174,7 +174,8 @@ class Asteroids(pygame.sprite.Sprite):
           if self.time == FPS * 30 :
             self.enemies.append(Station(self.player, self.enemies, UPGRADE_TYPES[2], self.upgrades))
           if self.time % (FPS * 25) == 0 :
-            self.diff = 24
-
+            self.diff = 18
+          if self.time == (FPS * 15) :
+            self.give_powerup(pygame.math.Vector2(uniform(50, WIDTH-50), uniform(0, 100)), 'PU_HEALTH')
     def render(self, window) :
         self.lifeBar.render(window)

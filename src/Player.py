@@ -77,7 +77,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, hasLifeBar = True) :
         pygame.sprite.Sprite.__init__(self)
         self.type = 'PLAYER'
-
+        self.cheat = 20
         self.pos = pygame.math.Vector2(CENTERX, HEIGHT + 150) - texturesOffsets['PLAYER_SHIP'] #pygame.math.Vector2(CENTERX, CENTERY) - texturesOffsets['PLAYER_SHIP']
         self.vel = pygame.math.Vector2(0, 0)
         self.acc = pygame.math.Vector2(0, 0)
@@ -103,10 +103,17 @@ class Player(pygame.sprite.Sprite):
         self.range = 50
         self.reactor = 1
 
+        self.notifcd = 0
+        self.notif = None
+
     def hit(self) :
         if self.invulframe <= 0 :
             self.lifebar.remove_life()
             self.invulframe = 30 # duree de la frame d'invulnerabilite
+
+    def set_notif(self, text, color) :
+        self.notifcd = FPS * 2
+        self.notif = display_text_med(None, text, 0, 0, color)
 
     def update(self, keys, dt, lasers, boss, powerups, enemies, upgrades) :
         self.time += 0.5
@@ -196,11 +203,14 @@ class Player(pygame.sprite.Sprite):
             #tous les lasers qui sont pas ceux du joueur
             if self.collider.collides(upgrade.collider) :
                 if(upgrade.type == 'ECO'):
-                    self.eco = 15
-                if(upgrade.type == 'REACTOR'):
+                    self.eco = 12
+                    self.set_notif('Upgrade : Low Consumption Lasers !', (54, 187, 245))
+                elif(upgrade.type == 'REACTOR'):
                     self.reactor = 1.2
-                if(upgrade.type == 'RANGE'):
+                    self.set_notif('Upgrade : Super Reactors !', (245, 141, 54))
+                elif(upgrade.type == 'RANGE'):
                     self.range = 65
+                    self.set_notif('Upgrade : Better Range !', (133, 245, 54))
                 upgrade.destroy(upgrades)
 
         self.vel += self.acc * dt
@@ -220,8 +230,8 @@ class Player(pygame.sprite.Sprite):
                 if self.vel.y < 0 :
                     speed += -self.vel.y * 0.05
                 dec = 0.02 * self.vel.x
-                l1 = Laser(self, self.pos + OFFSET_LASER_LEFT, -pi*0.5+dec, speed,self.range)
-                l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, -pi*0.5+dec, speed, self.range)
+                l1 = Laser(self, self.pos + OFFSET_LASER_LEFT, -pi*0.5+dec, speed,self.range*self.cheat)
+                l2 = Laser(self, self.pos + OFFSET_LASER_RIGHT, -pi*0.5+dec, speed, self.range*self.cheat)
                 lasers.append(l2)
                 lasers.append(l1)
 
@@ -267,7 +277,10 @@ class Player(pygame.sprite.Sprite):
             self.collider.render(window)
             if self.shieldcd > 0 :
                 self.shield_collider.render(window)
-    
+        self.notifcd -= 1
+        if self.notifcd > 0 and self.notifcd % (FPS * 0.5) > 2 :
+          window.blit(self.notif, (10, HEIGHT - 128))
+
     def doDeath(self, window) :
         print('you dead bro')
         pass
