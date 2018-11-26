@@ -259,7 +259,7 @@ def startAnim(player) :
 def menu() :
     background = textures['BACKGROUND']
 
-    textTexture = createTextTexture('Press space to start', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
+    textTexture = createTextTexture('Press space to start', './res/Fonts/kenvector_future_thin.ttf', 30, WHITE)
 
     player = Player(False)
     startCoord = pygame.math.Vector2(CENTERX, HEIGHT+100) - texturesOffsets['PLAYER_SHIP']
@@ -324,22 +324,57 @@ def menu() :
         frameCounter += 1
 
 
-
-textLabel = createTextTexture('Enter your name :', './res/Fonts/kenvector_future_thin.ttf', 30, (255, 255, 255))
-nameTexture = createTextTexture(name, './res/Fonts/kenvector_future_thin.ttf', 30, (255, 255, 0))
+fadeEnded = False
+alpha = 255.0
+alphasurf = pygame.Surface((WIDTH, HEIGHT))
+alphasurf.fill((0, 0, 0))
+alphasurf.set_alpha(alpha)
+stringLabelFinal = "We need your name captain :"
+stringLabel = ""
+stringcursor = 0
+canWrite = False
+textLabel = createTextTexture(stringLabel, './res/Fonts/kenvector_future_thin.ttf', 25, WHITE)
+nameTexture = createTextTexture('{  }', './res/Fonts/kenvector_future_thin.ttf', 30, GREEN)
 background = textures['BACKGROUND']
 time = 0
-exitName = False
+namemaxsize = 10
+namesize = 0
 
-while not exitName :
+yname = CENTERY
+velyname = -10
+nameSelected = False
+
+while yname > -200 :
     clock.tick(FPS)
+
+    if nameSelected :
+      yname -= velyname
+      velyname += 1.5
 
     for x in xrange(-256, WIDTH, 256) :
         for y in xrange(-256, HEIGHT, 256) :
             drawTexture(window, background, (x, y+time%256))
 
-    drawTexture(window, textLabel, (CENTERX - textLabel.get_width() / 2, CENTERY - 50))
-    drawTexture(window, nameTexture, (CENTERX - nameTexture.get_width() / 2, CENTERY))
+    if not canWrite :
+      
+      if stringcursor % 1 == 0 :
+        stringLabel += stringLabelFinal[int(stringcursor)]
+      stringcursor += 0.5
+      textLabel = createTextTexture(stringLabel, './res/Fonts/kenvector_future_thin.ttf', 25, WHITE)
+      if stringcursor == 27 :
+        canWrite = True
+
+    if not nameSelected :
+      drawTexture(window, textLabel, (CENTERX - textLabel.get_width() / 2, CENTERY - 50))
+    if canWrite :
+      drawTexture(window, nameTexture, (CENTERX - nameTexture.get_width() / 2, yname))
+
+    if not fadeEnded :
+      alphasurf.set_alpha(alpha)
+      alpha -= 2
+      window.blit(alphasurf, (0, 0))
+      if alpha <= 0 :
+        fadeEnded = True
 
     pygame.display.flip()
     for event in pygame.event.get() :
@@ -348,13 +383,16 @@ while not exitName :
         elif event.type == pygame.KEYDOWN :
             if event.key == pygame.K_RETURN:
                 print(name)
-                exitName = True
-            elif event.key == pygame.K_BACKSPACE:
+                nameSelected = True
+            elif event.key == pygame.K_BACKSPACE and canWrite :
                 name = name[:-1]
-                nameTexture = createTextTexture(name, './res/Fonts/kenvector_future_thin.ttf', 30, (255, 255, 0))
-            else:
-                name += event.unicode
-                nameTexture = createTextTexture(name, './res/Fonts/kenvector_future_thin.ttf', 30, (255, 255, 0))
+                namesize = len(name)
+                nameTexture = createTextTexture('{ ' + name + ' }', './res/Fonts/kenvector_future_thin.ttf', 30, GREEN)
+            elif canWrite :
+                if namesize < namemaxsize :
+                  name += event.unicode
+                  namesize += 1
+                  nameTexture = createTextTexture('{ ' + name + ' }', './res/Fonts/kenvector_future_thin.ttf', 30, GREEN)
     time += 1
 
 while True :
@@ -365,8 +403,6 @@ while True :
     frameCount = 0
     background = textures['BACKGROUND']
 
-    color = (200, 0, 0)
-
     if(retVal == 'playerQuit') :
         quit()
     elif (retVal == 'playerWon') :
@@ -374,10 +410,9 @@ while True :
         res = requests.post(req, data=[]) # record time
         print(req)
         print(res)
-        textTexture = createTextTexture('You WON !!', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
-        color = (0, 200, 0)
+        textTexture = createTextTexture('You WON !!', './res/Fonts/kenvector_future_thin.ttf', 30, WHITE)
     elif (retVal == 'playerLost') :
-        textTexture = createTextTexture('You lost...', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
+        textTexture = createTextTexture('You lost...', './res/Fonts/kenvector_future_thin.ttf', 30, WHITE)
     
     res = requests.get(URL+'/ranking', data=[]).json()
     print(res)
@@ -402,14 +437,18 @@ while True :
         drawTexture(window, textTexture, coordText)
         
         if retVal == 'playerWon' :
-          display_text_med(window, 'you have defeated the boss in ' + str(run_end) + ' sec', coordText.x - CENTERX + 88, 64, color)
+          display_text_med(window, 'you have defeated the boss in ' + str(run_end) + ' sec', coordText.x - CENTERX + 88, 64, GREEN)
         elif retVal == 'playerLost':
-          display_text_med(window, 'the boss destroyed you in ' + str(run_end) + ' sec', coordText.x - CENTERX + 88, 64, color)
+          display_text_med(window, 'the boss destroyed you in ' + str(run_end) + ' sec', coordText.x - CENTERX + 88, 64, RED)
 
-        display_text(window, 'HIGHSCORES', coordText.x - 20, CENTERY - 100, (255, 255, 255))
+        display_text(window, 'HIGHSCORES', coordText.x - 20, CENTERY - 100, WHITE)
         offy = CENTERY - 40
         for tm in res :
-          display_text_med(window, tm['name'] + ' : ' + tm['time'], coordText.x - 20, offy, (255, 255, 255))
+          if tm['time'] == str(run_end) :
+            col = GREEN
+          else :
+            col = WHITE
+          display_text_med(window, tm['name'] + ' : ' + tm['time'], coordText.x - 20, offy, col)
           offy += 32
         
         pygame.display.flip()

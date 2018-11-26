@@ -9,6 +9,9 @@ CENTERX = WIDTH*0.5
 CENTERY = HEIGHT*0.5
 
 NULLVEC = pygame.math.Vector2(0, 0)
+GREEN = (133, 245, 54)
+RED = (245, 141, 54)
+WHITE = (255, 255, 255)
 
 #strange aliases
 try:
