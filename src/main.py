@@ -290,6 +290,7 @@ def menu() :
             if event.type == pygame.QUIT :
                 return 'playerQuit'
 
+        
         player.render(window)
 
         pygame.display.flip()
@@ -318,11 +319,11 @@ def menu() :
                     if(startAnim(player) == 'playerQuit') :
                         return 'playerQuit'
                     return main()
-
+        
         player.render(window)
 
         if(framecount < 30) :
-            drawTexture(window, textTexture, (WIDTH - textTexture.get_width() * 0.5, HEIGHT*0.7))
+            drawTexture(window, textTexture, (CENTERX - textTexture.get_width() * 0.5, HEIGHT*0.7))
         elif (framecount < 60) :
             pass
         else :
