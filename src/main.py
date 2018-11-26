@@ -257,6 +257,7 @@ def startAnim(player) :
 
 ## Menu
 def menu() :
+    global time
     background = textures['BACKGROUND']
 
     textTexture = createTextTexture('Press space to start', './res/Fonts/kenvector_future_thin.ttf', 30, WHITE)
@@ -273,7 +274,7 @@ def menu() :
          
         for x in xrange(-256, WIDTH, 256) :
             for y in xrange(-256, HEIGHT, 256) :
-                window.blit(background, (x, y))
+                window.blit(background, (x, y+time%256))
 
         if not ((goalCoord - player.pos).length() < 10) :
             player.pos = player.pos.lerp(goalCoord, 0.05)
@@ -299,7 +300,7 @@ def menu() :
 
         for x in xrange(-256, WIDTH, 256) :
             for y in xrange(-256, HEIGHT, 256) :
-                window.blit(background, (x+offx, y+frameCounter%256))
+                window.blit(background, (x+offx, y+time%256))
         
         for event in pygame.event.get() :
             if event.type == pygame.QUIT :
@@ -427,7 +428,7 @@ while True :
 
         for x in xrange(-256, WIDTH, 256) :
             for y in xrange(-256, HEIGHT, 256) :
-                drawTexture(window, background, (x, y))
+                drawTexture(window, background, (x, y+time%256))
         
         if((coordText - coordMiddleText).length() >= 3) :
             coordText = coordText.lerp(coordMiddleText, 0.05)
