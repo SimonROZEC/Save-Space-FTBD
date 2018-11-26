@@ -79,6 +79,8 @@ def main() :
 
     ###########
     
+    global token
+
     res = requests.post(URL+'/register_run', data=[])
     token = res.json()["token"]
 
@@ -316,8 +318,6 @@ def menu() :
             pass
         else :
             framecount = 0
-
-        drawTexture(window, nameTexture, (8, 8))
         pygame.display.flip()
 
         framecount += 1
@@ -330,6 +330,7 @@ nameTexture = createTextTexture(name, './res/Fonts/kenvector_future_thin.ttf', 3
 background = textures['BACKGROUND']
 time = 0
 exitName = False
+
 while not exitName :
     clock.tick(FPS)
 
@@ -347,7 +348,6 @@ while not exitName :
         elif event.type == pygame.KEYDOWN :
             if event.key == pygame.K_RETURN:
                 print(name)
-                name = ''
                 exitName = True
             elif event.key == pygame.K_BACKSPACE:
                 name = name[:-1]
@@ -370,17 +370,20 @@ while True :
     if(retVal == 'playerQuit') :
         quit()
     elif (retVal == 'playerWon') :
-        res = requests.post(URL+'/validate_run/' + token + '/' + name + '/' + str(run_end), data=[]) # record time
+        req = URL+'/validate_run/' + token + '/' + name + '/' + str(run_end)
+        res = requests.post(req, data=[]) # record time
+        print(req)
+        print(res)
         textTexture = createTextTexture('You WON !!', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
         color = (0, 200, 0)
     elif (retVal == 'playerLost') :
-        textTexture = createTextTexture('You lost', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
+        textTexture = createTextTexture('You lost...', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
     
-    res = requests.get(URL+'/ranking', data=[])
-    print(res.json())
+    res = requests.get(URL+'/ranking', data=[]).json()
+    print(res)
 
-    coordTextStart = pygame.math.Vector2(-500, CENTERY)
-    coordMiddleText = pygame.math.Vector2(CENTERX - 75, CENTERY)
+    coordTextStart = pygame.math.Vector2(-500, 16)
+    coordMiddleText = pygame.math.Vector2(CENTERX - 75, 16)
 
     coordText = coordTextStart
 
@@ -393,13 +396,22 @@ while True :
         
         if((coordText - coordMiddleText).length() >= 3) :
             coordText = coordText.lerp(coordMiddleText, 0.05)
-        else :
+        elif frameCount > FPS * 10:
             break
 
         drawTexture(window, textTexture, coordText)
         
-        display_text(window, 'time : ' + str(run_end), coordText.x, coordText.y + 32, color)
+        if retVal == 'playerWon' :
+          display_text_med(window, 'you have defeated the boss in ' + str(run_end) + ' sec', coordText.x - CENTERX + 88, 64, color)
+        elif retVal == 'playerLost':
+          display_text_med(window, 'the boss destroyed you in ' + str(run_end) + ' sec', coordText.x - CENTERX + 88, 64, color)
 
+        display_text(window, 'HIGHSCORES', coordText.x - 20, CENTERY - 100, (255, 255, 255))
+        offy = CENTERY - 40
+        for tm in res :
+          display_text_med(window, tm['name'] + ' : ' + tm['time'], coordText.x - 20, offy, (255, 255, 255))
+          offy += 32
+        
         pygame.display.flip()
 
         for event in pygame.event.get() :
