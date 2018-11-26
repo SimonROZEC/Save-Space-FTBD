@@ -266,7 +266,7 @@ def menu() :
     global offx
     background = textures['BACKGROUND']
 
-    textTexture = createTextTexture('Press space to start', './res/Fonts/kenvector_future_thin.ttf', 30, WHITE)
+    textTexture = createTextTexture('< Press space to start > ', './res/Fonts/kenvector_future_thin.ttf', 30, WHITE)
 
     player = Player(False)
     startCoord = pygame.math.Vector2(CENTERX, HEIGHT+100) - texturesOffsets['PLAYER_SHIP']
@@ -322,7 +322,7 @@ def menu() :
         player.render(window)
 
         if(framecount < 30) :
-            drawTexture(window, textTexture, (WIDTH*0.5-180, HEIGHT*0.7))
+            drawTexture(window, textTexture, (WIDTH - textTexture.get_width() * 0.5, HEIGHT*0.7))
         elif (framecount < 60) :
             pass
         else :
