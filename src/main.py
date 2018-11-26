@@ -218,6 +218,9 @@ def main() :
 
 #
 def startAnim(player) :
+    global time
+    global offx
+
     coordsBack = pygame.math.Vector2(CENTERX, CENTERY + 100) - texturesOffsets['PLAYER_SHIP']
     coordsEnd = pygame.math.Vector2(CENTERX, - 1000) - texturesOffsets['PLAYER_SHIP']
     background = textures['BACKGROUND']
@@ -238,11 +241,11 @@ def startAnim(player) :
             return 'animEnded'
 
         # move back ground according to player poss
-        offx = - sin(framecount*0.01) * 30
-
+        offx += - sin(time*0.01) * 0.2
+        time += 1
         for x in xrange(-256, WIDTH, 256) :
             for y in xrange(-256, HEIGHT, 256) :
-                window.blit(background, (x+offx, y+framecount%256))
+                window.blit(background, (x+offx, y+time%256))
 
         player.render(window)
         pygame.display.flip()
@@ -255,9 +258,12 @@ def startAnim(player) :
     # should not be reachable
     return 'animEnded'
 
+offx = 0
+
 ## Menu
 def menu() :
     global time
+    global offx
     background = textures['BACKGROUND']
 
     textTexture = createTextTexture('Press space to start', './res/Fonts/kenvector_future_thin.ttf', 30, WHITE)
@@ -271,7 +277,6 @@ def menu() :
     ## anim de debut de menu
     while True :
         clock.tick(FPS)
-         
         for x in xrange(-256, WIDTH, 256) :
             for y in xrange(-256, HEIGHT, 256) :
                 window.blit(background, (x, y+time%256))
@@ -292,21 +297,24 @@ def menu() :
     #anim d'attente
     framecount = 0
     frameCounter = 0
+    ytime = time
     while True :
         clock.tick(FPS)
         
         # move back ground according to player poss
-        offx = - sin(frameCounter*0.01) * 30
+        offx += - sin(time*0.01) * 0.2
+        time += 1
 
         for x in xrange(-256, WIDTH, 256) :
             for y in xrange(-256, HEIGHT, 256) :
-                window.blit(background, (x+offx, y+time%256))
+                window.blit(background, (x+offx, y+ytime%256))
         
         for event in pygame.event.get() :
             if event.type == pygame.QUIT :
                 return
             elif event.type == pygame.KEYDOWN :
-                if event.key == pygame.K_SPACE :   
+                if event.key == pygame.K_SPACE :
+                    time = ytime 
                     if(startAnim(player) == 'playerQuit') :
                         return 'playerQuit'
                     return main()
@@ -383,7 +391,6 @@ while yname > -200 :
             quit()
         elif event.type == pygame.KEYDOWN :
             if event.key == pygame.K_RETURN:
-                print(name)
                 nameSelected = True
             elif event.key == pygame.K_BACKSPACE and canWrite :
                 name = name[:-1]
@@ -409,14 +416,11 @@ while True :
     elif (retVal == 'playerWon') :
         req = URL+'/validate_run/' + token + '/' + name + '/' + str(run_end)
         res = requests.post(req, data=[]) # record time
-        print(req)
-        print(res)
         textTexture = createTextTexture('You WON !!', './res/Fonts/kenvector_future_thin.ttf', 30, WHITE)
     elif (retVal == 'playerLost') :
         textTexture = createTextTexture('You lost...', './res/Fonts/kenvector_future_thin.ttf', 30, WHITE)
     
     res = requests.get(URL+'/ranking', data=[]).json()
-    print(res)
 
     coordTextStart = pygame.math.Vector2(-500, 16)
     coordMiddleText = pygame.math.Vector2(CENTERX - 75, 16)
