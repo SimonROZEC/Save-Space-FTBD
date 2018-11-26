@@ -1,9 +1,12 @@
 #imports
 import pygame
+import requests
 from queue import Queue
 
-
-
+# API INFOS
+URL = 'https://spaceshooter-api.herokuapp.com'
+token = ''
+name = ''
 
 # init sdl
 pygame.init()
@@ -75,7 +78,9 @@ def main() :
     start_timer() # init du debut de la run
 
     ###########
-
+    
+    res = requests.post(URL+'/register_run', data=[])
+    token = res.json()["token"]
 
     while running :
         # time since last frame, should be 1/FPS
@@ -217,6 +222,7 @@ def startAnim(player) :
 
     framecount = 0
     currentCoord = coordsBack
+    
 
     while True :
         clock.tick(FPS)
@@ -310,13 +316,46 @@ def menu() :
             pass
         else :
             framecount = 0
-        
+
+        drawTexture(window, nameTexture, (8, 8))
         pygame.display.flip()
 
         framecount += 1
         frameCounter += 1
 
 
+
+textLabel = createTextTexture('Enter your name :', './res/Fonts/kenvector_future_thin.ttf', 30, (255, 255, 255))
+nameTexture = createTextTexture(name, './res/Fonts/kenvector_future_thin.ttf', 30, (255, 255, 0))
+background = textures['BACKGROUND']
+time = 0
+exitName = False
+while not exitName :
+    clock.tick(FPS)
+
+    for x in xrange(-256, WIDTH, 256) :
+        for y in xrange(-256, HEIGHT, 256) :
+            drawTexture(window, background, (x, y+time%256))
+
+    drawTexture(window, textLabel, (CENTERX - textLabel.get_width() / 2, CENTERY - 50))
+    drawTexture(window, nameTexture, (CENTERX - nameTexture.get_width() / 2, CENTERY))
+
+    pygame.display.flip()
+    for event in pygame.event.get() :
+        if event.type == pygame.QUIT :
+            quit()
+        elif event.type == pygame.KEYDOWN :
+            if event.key == pygame.K_RETURN:
+                print(name)
+                name = ''
+                exitName = True
+            elif event.key == pygame.K_BACKSPACE:
+                name = name[:-1]
+                nameTexture = createTextTexture(name, './res/Fonts/kenvector_future_thin.ttf', 30, (255, 255, 0))
+            else:
+                name += event.unicode
+                nameTexture = createTextTexture(name, './res/Fonts/kenvector_future_thin.ttf', 30, (255, 255, 0))
+    time += 1
 
 while True :
     retVal = menu()
@@ -331,11 +370,15 @@ while True :
     if(retVal == 'playerQuit') :
         quit()
     elif (retVal == 'playerWon') :
+        res = requests.post(URL+'/validate_run/' + token + '/' + name + '/' + str(run_end), data=[]) # record time
         textTexture = createTextTexture('You WON !!', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
         color = (0, 200, 0)
     elif (retVal == 'playerLost') :
         textTexture = createTextTexture('You lost', './res/Fonts/kenvector_future_thin.ttf', 30, (0, 0, 0))
     
+    res = requests.get(URL+'/ranking', data=[])
+    print(res.json())
+
     coordTextStart = pygame.math.Vector2(-500, CENTERY)
     coordMiddleText = pygame.math.Vector2(CENTERX - 75, CENTERY)
 
