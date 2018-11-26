@@ -126,7 +126,7 @@ class Boss(pygame.sprite.Sprite):
     def spawn_enemy(self, pos, target = None)  :
         enemy = None
         if target == None :
-            enemy = Enemy(self, pos, 0.4, FPS, 100)
+            enemy = Enemy(self, pos, 0.4, FPS * 1.2, 90)
         else :
             enemy = Enemy(self, pos, 0.4, FPS, 2000, target, True)
         self.enemies.append(enemy)

@@ -382,7 +382,7 @@ def phase6_update(self, boss) :
           if self.time % 40 == 0 :
               boss.spawn_enemy(self.enr+(uniform(-40, 40), 0))
               boss.spawn_enemy(self.enl+(uniform(-40, 40), 0))
-      if self.time % (FPS * 1) > (FPS * 0.5) :
+      if self.time % (FPS * 1) > (FPS * 0.3) :
         if self.time % 5 == 0 :
           boss.fire(0, self.target)
       else :
@@ -402,8 +402,8 @@ def phase6_update(self, boss) :
       if boss.dist_to_point(self.chargepos) < 20 :
         self.charging = False
         self.prepared = False
-        for i in range(0, 10) :
-                randomfire =  i * (2 * pi / 10)
+        for i in range(0, 8) :
+                randomfire =  i * (2 * pi / 8)
                 randomfirepos = boss.pos + pygame.math.Vector2(cos(randomfire) * CENTERX, sin(randomfire) * CENTERX)
                 boss.fire(0, randomfirepos)
       pass
