@@ -9,14 +9,33 @@ class IAPlayer():
         self.player = player
         self.powerup = powerups
         self.IACollider = Collider(self.player, 70, pygame.math.Vector2(50, 40))
-    
+        self.inputsDelays = {
+            'up'   : 0,
+            'down' : 0,
+            'left' : 0,
+            'right': 0,
+            'fire' : 0
+        }
+
+    def smallStep(self, keysCode, delay, pressed) :
+        self.self.inputsDelays[keysCode] = self.self.inputsDelays[keysCode] - 1
+        self.self.inputsDelays[keysCode] = self.self.inputsDelays[keysCode] - 1
+        self.self.inputsDelays[keysCode] = self.self.inputsDelays[keysCode] - 1
+        self.self.inputsDelays[keysCode] = self.self.inputsDelays[keysCode] - 1
+        self.self.inputsDelays[keysCode] = self.self.inputsDelays[keysCode] - 1
+
+        if(self.self.inputsDelays[keysCode] > 0 and inputs[keysCode] == pressed) :
+            self.self.inputsDelays[keysCode] = delay
+            return True
+        return False
 
 
     def processInput(self, boss, lasers, inputs) :
         
         if( self.isPlayerBelowBoss(boss) ) :
             if(self.player.energybar.energy > 0 and boss.shieldcd <= 0 ) :
-                inputs['fire'] = True
+                self.smallStep('fire', 10, true);
+                #inputs['fire'] = True
         else :  
             if ( self.player.vel.length() < 1 and self.player.vel.length() > -1 ) :         
                 if ( (boss.colliders[1].getX() - self.player.collider.getX()) > 0 ) :
