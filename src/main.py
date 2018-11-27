@@ -350,9 +350,10 @@ time = 0
 namemaxsize = 10
 namesize = 0
 
-yname = CENTERY
+yname = CENTERY + 40
 velyname = -10
 nameSelected = False
+
 
 while yname > -200 :
     clock.tick(FPS)
@@ -370,14 +371,14 @@ while yname > -200 :
       if stringcursor % 1 == 0 :
         stringLabel += stringLabelFinal[int(stringcursor)]
       stringcursor += 0.5
-      textLabel = createTextTexture(stringLabel, './res/Fonts/kenvector_future_thin.ttf', 25, WHITE)
       if stringcursor == 27 :
         canWrite = True
 
     if not nameSelected :
-      drawTexture(window, textLabel, (CENTERX - textLabel.get_width() / 2, CENTERY - 50))
+      display_text_med(window, stringLabel, CENTERX, CENTERY, WHITE, True)
     if canWrite :
-      drawTexture(window, nameTexture, (CENTERX - nameTexture.get_width() / 2, yname))
+      #drawTexture(window, name, (CENTERX, yname))
+      display_text(window, '{' + name + '}', CENTERX, yname, GREEN, True)
 
     if not fadeEnded :
       alphasurf.set_alpha(alpha)
@@ -396,12 +397,12 @@ while yname > -200 :
             elif event.key == pygame.K_BACKSPACE and canWrite :
                 name = name[:-1]
                 namesize = len(name)
-                nameTexture = createTextTexture('{ ' + name + ' }', './res/Fonts/kenvector_future_thin.ttf', 30, GREEN)
+                #nameTexture = createTextTexture('{ ' + name + ' }', './res/Fonts/kenvector_future_thin.ttf', 30, GREEN)
             elif canWrite :
                 if namesize < namemaxsize :
                   name += event.unicode
                   namesize += 1
-                  nameTexture = createTextTexture('{ ' + name + ' }', './res/Fonts/kenvector_future_thin.ttf', 30, GREEN)
+                  #nameTexture = createTextTexture('{ ' + name + ' }', './res/Fonts/kenvector_future_thin.ttf', 30, GREEN)
     time += 1
 
 while True :
@@ -427,7 +428,9 @@ while True :
     coordMiddleText = pygame.math.Vector2(CENTERX - 75, 16)
 
     coordText = coordTextStart
-
+    restart = False
+    endanim = -0.5
+    black = (0, 0, 0)
     while True :
         clock.tick(FPS)
 
@@ -437,8 +440,11 @@ while True :
         
         if((coordText - coordMiddleText).length() >= 3) :
             coordText = coordText.lerp(coordMiddleText, 0.05)
-        elif frameCount > FPS * 10:
-            break
+        else :
+            pass
+
+        drawTexture(window, textTexture, coordText)
+        
 
         drawTexture(window, textTexture, coordText)
         
@@ -462,6 +468,16 @@ while True :
         for event in pygame.event.get() :
             if event.type == pygame.QUIT :
                 quit()
+            elif event.type == pygame.KEYDOWN :
+                if event.key == pygame.K_SPACE :
+                    restart = True
 
+        if restart :
+            pygame.draw.polygon (window, black, [(0, 0), (0, HEIGHT), (WIDTH*endanim, HEIGHT), (WIDTH*endanim+200, 0)])
+            endanim += 0.1
+            if endanim >= 1.5 :
+                break
+
+        pygame.display.flip()
         frameCount += 1
 
