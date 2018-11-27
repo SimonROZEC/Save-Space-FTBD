@@ -267,6 +267,11 @@ def menu() :
     background = textures['BACKGROUND']
 
     textTexture = createTextTexture('< Press space to start > ', './res/Fonts/kenvector_future_thin.ttf', 30, WHITE)
+    tuto = createTextTexture('<a> to fire          <arrows> to move', './res/Fonts/kenvector_future_thin.ttf', 20, GREEN)
+    tutopu = createTextTexture('Refill laser        Shield for 2 sec         Extra life !', './res/Fonts/kenvector_future_thin.ttf', 14, GREEN)
+
+    title1 = createTextTexture('Save the space', './res/Fonts/kenvector_future_thin.ttf', 60, GREEN)
+    title2 = createTextTexture('from the bad dude', './res/Fonts/kenvector_future_thin.ttf', 40, GREEN)
 
     player = Player(False)
     startCoord = pygame.math.Vector2(CENTERX, HEIGHT+100) - texturesOffsets['PLAYER_SHIP']
@@ -290,7 +295,8 @@ def menu() :
             if event.type == pygame.QUIT :
                 return 'playerQuit'
 
-        
+        drawTexture(window, title1, (CENTERX - title1.get_width() * 0.5, HEIGHT - player.pos.y * 1.7))
+        drawTexture(window, title2, (CENTERX - title2.get_width() * 0.5, HEIGHT - player.pos.y * 1.7 + 50))
         player.render(window)
 
         pygame.display.flip()
@@ -328,6 +334,17 @@ def menu() :
             pass
         else :
             framecount = 0
+
+        #draw tuto
+        drawTexture(window, tuto, (CENTERX - tuto.get_width() * 0.5, HEIGHT-120))
+        drawTexture(window, textures['PU_ENERGY'], (WIDTH / 4, HEIGHT-50)  - texturesOffsets['PU'])
+        drawTexture(window, textures['PU_SHIELD'], (2*(WIDTH / 4) , HEIGHT-50)- texturesOffsets['PU'])
+        drawTexture(window, textures['PU_HEALTH'], (3*(WIDTH / 4), HEIGHT-50) - texturesOffsets['PU'])
+        drawTexture(window, tutopu, (CENTERX - tutopu.get_width() * 0.5 - 6, HEIGHT-30))
+
+        drawTexture(window, title1, (CENTERX - title1.get_width() * 0.5, HEIGHT - player.pos.y * 1.7))
+        drawTexture(window, title2, (CENTERX - title2.get_width() * 0.5, HEIGHT - player.pos.y * 1.7 + 50))
+
         pygame.display.flip()
 
         framecount += 1
@@ -445,22 +462,19 @@ while True :
 
         drawTexture(window, textTexture, coordText)
         
-
-        drawTexture(window, textTexture, coordText)
-        
         if retVal == 'playerWon' :
-          display_text_med(window, 'you have defeated the boss in ' + str(run_end) + ' sec', coordText.x - CENTERX + 88, 64, GREEN)
+          display_text_med(window, 'you have defeated the boss in ' + str(run_end) + ' sec', CENTERX, 64, GREEN, True)
         elif retVal == 'playerLost':
-          display_text_med(window, 'the boss destroyed you in ' + str(run_end) + ' sec', coordText.x - CENTERX + 88, 64, RED)
+          display_text_med(window, 'the boss destroyed you in ' + str(run_end) + ' sec', CENTERX, 64, RED, True)
 
-        display_text(window, 'HIGHSCORES', coordText.x - 20, CENTERY - 100, WHITE)
+        display_text(window, 'HIGHSCORES', CENTERX, CENTERY - 100, WHITE, True)
         offy = CENTERY - 40
         for tm in res :
-          if tm['time'] == str(run_end) :
+          if tm['time'] == str(run_end) and tm['name'] == name :
             col = GREEN
           else :
             col = WHITE
-          display_text_med(window, tm['name'] + ' : ' + tm['time'], coordText.x - 20, offy, col)
+          display_text_med(window, tm['name'] + ' : ' + tm['time'], CENTERX, offy, col, True)
           offy += 32
         
         pygame.display.flip()
@@ -474,6 +488,7 @@ while True :
 
         if restart :
             pygame.draw.polygon (window, black, [(0, 0), (0, HEIGHT), (WIDTH*endanim, HEIGHT), (WIDTH*endanim+200, 0)])
+            pygame.display.flip()
             endanim += 0.1
             if endanim >= 1.5 :
                 break
