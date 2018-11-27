@@ -60,7 +60,7 @@ class Station(pygame.sprite.Sprite) :
                         lasers.append(l)
                         l.destroy(lasers)
                     enemies.remove(self)
-                    self.upgrades.append(Upgrade(self.pos, self.pos+(uniform(-200, 200), uniform(-50, 50)), self.type))
+                    self.upgrades.append(Upgrade(self.pos, self.pos+(uniform(-200, 200), uniform(-50, 50)), self.type, enemies))
 
                     #TODO GIVE UPGRADE TO PLAYER
               
@@ -81,7 +81,7 @@ class Asteroid(pygame.sprite.Sprite) :
         self.enemies = enemies
         self.scale = uniform(0.8, 1.4)
         self.collider = Collider(self, 40*self.scale, pygame.math.Vector2(0, 0))
-        self.forcefield = Collider(self, 40 * self.scale * 2.5, pygame.math.Vector2(0, 0))
+        self.forcefield = Collider(self, 40 * self.scale + 40, pygame.math.Vector2(0, 0))
 
         self.image = pygame.transform.rotozoom(textures['ASTEROID'][randint(0, 2)], 0, self.scale).convert_alpha()
         self.rotatespeed = uniform(-0.2, 0.2)
@@ -116,7 +116,7 @@ class Asteroid(pygame.sprite.Sprite) :
           if collider.collides(enemy.forcefield) :
               force = self.pos + texturesOffsets['ASTEROID'] - enemy.pos
               force.scale_to_length(0.05)
-              self.acc += force  
+              self.acc += force
 
       if self.collider.collides(player.collider) :
               force = (self.pos) - (player.pos + texturesOffsets['PLAYER_SHIP'])
@@ -159,7 +159,7 @@ class Asteroids(pygame.sprite.Sprite):
         self.enemies = enemies
         self.time = 0
         self.lifeBar = BossLifeBar(self, FPS * 40)
-        self.diff = 30
+        self.diff = 50
 
     def give_powerup(self, target, type) :
         self.powerups.append(Powerup(self.pos, target, type))
@@ -177,8 +177,8 @@ class Asteroids(pygame.sprite.Sprite):
           if self.time == FPS * 30 :
             self.enemies.append(Station(self.player, self.enemies, UPGRADE_TYPES[2], self.upgrades))
           if self.time % (FPS * 25) == 0 :
-            self.diff = 25
-          if self.time == (FPS * 8) :
+            self.diff = 40
+          if self.time % (FPS * 8) == 0:
             self.give_powerup(pygame.math.Vector2(uniform(50, WIDTH-50), uniform(0, 100)), 'PU_HEALTH')
     def render(self, window) :
         self.lifeBar.render(window)

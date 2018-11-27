@@ -27,7 +27,7 @@ class PowerupPicked(pygame.sprite.Sprite):
             upgrade_particles.remove(self)
 
 class Upgrade(pygame.sprite.Sprite):
-    def __init__(self, pos, target, type) :
+    def __init__(self, pos, target, type, enemies) :
         pygame.sprite.Sprite.__init__(self)
         
         self.prepared = False
@@ -43,6 +43,7 @@ class Upgrade(pygame.sprite.Sprite):
 
         self.collider = Collider(self, 12, pygame.math.Vector2(0, 0))
         self.scale = 1
+        self.enemies = enemies
 
     def update(self, dt, upgrades) :
 
@@ -57,9 +58,11 @@ class Upgrade(pygame.sprite.Sprite):
                 self.acc.x = -0.1
             else :
                 self.acc.x = 0
+            
             self.vel.x *= 0.8
             self.vel += self.acc
             self.pos += self.vel * dt
+
         else :
             self.pos = target_point(self.pos, self.target, 0.2)
             if dist_to_point(self.pos, self.target) < 10 :

@@ -340,7 +340,9 @@ while True :
     coordMiddleText = pygame.math.Vector2(CENTERX - 75, CENTERY)
 
     coordText = coordTextStart
-
+    restart = False
+    endanim = -0.5
+    black = (0, 0, 0)
     while True :
         clock.tick(FPS)
 
@@ -351,17 +353,27 @@ while True :
         if((coordText - coordMiddleText).length() >= 3) :
             coordText = coordText.lerp(coordMiddleText, 0.05)
         else :
-            break
+            pass
 
         drawTexture(window, textTexture, coordText)
         
         display_text(window, 'time : ' + str(run_end), coordText.x, coordText.y + 32, color)
 
-        pygame.display.flip()
+        
 
         for event in pygame.event.get() :
             if event.type == pygame.QUIT :
                 quit()
+            elif event.type == pygame.KEYDOWN :
+                if event.key == pygame.K_SPACE :
+                    restart = True
 
+        if restart :
+            pygame.draw.polygon (window, black, [(0, 0), (0, HEIGHT), (WIDTH*endanim, HEIGHT), (WIDTH*endanim+200, 0)])
+            endanim += 0.1
+            if endanim >= 1.5 :
+                break
+
+        pygame.display.flip()
         frameCount += 1
 
