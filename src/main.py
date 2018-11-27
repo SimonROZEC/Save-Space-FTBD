@@ -73,7 +73,7 @@ def main() :
     running = True
     currentEnemy = bossAndAddQueue.get()
 
-
+    global token
     res = requests.post(URL+'/register_run', data=[])
     token = res.json()["token"]
 
@@ -83,7 +83,7 @@ def main() :
 
     ###########
     
-    global token
+   
 
     while running :
         # time since last frame, should be 1/FPS
