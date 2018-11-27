@@ -9,6 +9,9 @@ CENTERX = WIDTH*0.5
 CENTERY = HEIGHT*0.5
 
 NULLVEC = pygame.math.Vector2(0, 0)
+GREEN = (133, 245, 54)
+RED = (245, 141, 54)
+WHITE = (255, 255, 255)
 
 #strange aliases
 try:
@@ -38,29 +41,38 @@ def target_point(start, target, speed) :
 def dist_to_point(start, target) :
     return (target-start).length()
 
-def display_text(window, text, x, y, col) :
+def display_text(window, text, x, y, col, centred = False) :
     img = font.render(text, True, col)
     drect = img.get_rect()
     drect.left = x
     drect.top = y
+    if centred :
+        drect.left -= img.get_width() * 0.5
+        drect.top -= img.get_height() * 0.5
     if not window == None :
       window.blit(img, drect)
     return img
 
-def display_text_med(window, text, x, y, col) :
+def display_text_med(window, text, x, y, col, centred = False) :
     img = font_med.render(text, True, col)
     drect = img.get_rect()
     drect.left = x
     drect.top = y
+    if centred :
+        drect.left -= img.get_width() * 0.5
+        drect.top -= img.get_height() * 0.5
     if not window == None :
       window.blit(img, drect)
     return img
 
-def display_text_min(window, text, x, y, col) :
+def display_text_min(window, text, x, y, col, centred = False) :
     img = font_min.render(text, True, col)
     drect = img.get_rect()
     drect.left = x
     drect.top = y
+    if centred :
+        drect.left -= img.get_width() * 0.5
+        drect.top -= img.get_height() * 0.5
     if not window == None :
       window.blit(img, drect)
     return img

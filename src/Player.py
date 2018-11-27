@@ -77,7 +77,7 @@ class Player(pygame.sprite.Sprite):
     def __init__(self, hasLifeBar = True) :
         pygame.sprite.Sprite.__init__(self)
         self.type = 'PLAYER'
-        self.cheat = 1
+        self.cheat = 20
         self.pos = pygame.math.Vector2(CENTERX, HEIGHT + 150) - texturesOffsets['PLAYER_SHIP'] #pygame.math.Vector2(CENTERX, CENTERY) - texturesOffsets['PLAYER_SHIP']
         self.vel = pygame.math.Vector2(0, 0)
         self.acc = pygame.math.Vector2(0, 0)
