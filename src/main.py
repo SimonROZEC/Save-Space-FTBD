@@ -15,7 +15,7 @@ from globaldefines import *
 from IAplayer import *
 
 window = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("-#- Space Shooter -#-")
+pygame.display.set_caption("Save space from the bad dude")
 
 clock = pygame.time.Clock()
 
@@ -35,7 +35,7 @@ from Enemy import *
 from Asteroids import *
 from Upgrade import *
 
-##
+#
 # Return false if game was closed py player, true if player lost
 #
 def main() :   
@@ -270,7 +270,7 @@ def menu() :
     tuto = createTextTexture('<a> to fire              <arrows> to move', './res/Fonts/kenvector_future_thin.ttf', 20, GREEN)
     tutopu = createTextTexture('Refill laser        Shield for 2 sec         Extra life !', './res/Fonts/kenvector_future_thin.ttf', 14, GREEN)
 
-    title1 = createTextTexture('Save the space', './res/Fonts/kenvector_future_thin.ttf', 60, GREEN)
+    title1 = createTextTexture('Save space', './res/Fonts/kenvector_future_thin.ttf', 60, GREEN)
     title2 = createTextTexture('from the bad dude', './res/Fonts/kenvector_future_thin.ttf', 40, GREEN)
 
     player = Player(False)
