@@ -168,7 +168,7 @@ class Asteroids(pygame.sprite.Sprite):
     def update(self, dt) :
         self.time += 1
         self.lifeBar.life -= 1
-        if self.lifeBar.life > FPS * 10 :
+        if self.lifeBar.life > FPS * 8 :
           if self.time % (self.diff) == 0:
             self.enemies.append(Asteroid(self, pygame.math.Vector2(uniform(0, WIDTH), -50), self.player, self.enemies))
           if self.time == FPS * 10 :

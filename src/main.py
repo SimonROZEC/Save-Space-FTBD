@@ -267,7 +267,7 @@ def menu() :
     background = textures['BACKGROUND']
 
     textTexture = createTextTexture('< Press space to start > ', './res/Fonts/kenvector_future_thin.ttf', 30, WHITE)
-    tuto = createTextTexture('<a> to fire          <arrows> to move', './res/Fonts/kenvector_future_thin.ttf', 20, GREEN)
+    tuto = createTextTexture('<a> to fire              <arrows> to move', './res/Fonts/kenvector_future_thin.ttf', 20, GREEN)
     tutopu = createTextTexture('Refill laser        Shield for 2 sec         Extra life !', './res/Fonts/kenvector_future_thin.ttf', 14, GREEN)
 
     title1 = createTextTexture('Save the space', './res/Fonts/kenvector_future_thin.ttf', 60, GREEN)
@@ -448,7 +448,10 @@ while True :
     restart = False
     endanim = -0.5
     black = (0, 0, 0)
+    returntex = createTextTexture('< Press space return to menu > ', './res/Fonts/kenvector_future_thin.ttf', 30, WHITE)
+    delaytex = 0
     while True :
+        delaytex += 1
         clock.tick(FPS)
 
         for x in xrange(-256, WIDTH, 256) :
@@ -477,6 +480,9 @@ while True :
           display_text_med(window, tm['name'] + ' : ' + tm['time'], CENTERX, offy, col, True)
           offy += 32
         
+        if(delaytex%60 < 30) :
+            drawTexture(window, returntex, (CENTERX - returntex.get_width() * 0.5, HEIGHT- 32))
+
         pygame.display.flip()
 
         for event in pygame.event.get() :
