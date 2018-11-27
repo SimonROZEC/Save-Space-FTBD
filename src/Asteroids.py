@@ -159,7 +159,7 @@ class Asteroids(pygame.sprite.Sprite):
         self.enemies = enemies
         self.time = 0
         self.lifeBar = BossLifeBar(self, FPS * 40)
-        self.diff = 50
+        self.diff = 70
         self.segmented = False
 
     def give_powerup(self, target, type) :
@@ -178,7 +178,7 @@ class Asteroids(pygame.sprite.Sprite):
           if self.time == FPS * 30 :
             self.enemies.append(Station(self.player, self.enemies, UPGRADE_TYPES[2], self.upgrades))
           if self.time % (FPS * 25) == 0 :
-            self.diff = 40
+            self.diff = 60
           if self.time % (FPS * 8) == 0:
             self.give_powerup(pygame.math.Vector2(uniform(50, WIDTH-50), uniform(0, 100)), 'PU_HEALTH')
         elif self.lifeBar.life < FPS * 1:

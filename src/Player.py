@@ -124,7 +124,7 @@ class Player(pygame.sprite.Sprite):
             self.acc.y = 0.04*self.reactor
         else :
             self.acc.y = 0
-            self.vel.y *= 0.85
+            self.vel.y *= 0.85 / self.reactor
 
         if keys['right']:
             self.acc.x = 0.1*self.reactor
@@ -132,7 +132,7 @@ class Player(pygame.sprite.Sprite):
             self.acc.x = -0.1*self.reactor
         else :
             self.acc.x = 0
-            self.vel.x *= 0.85
+            self.vel.x *= 0.85 / self.reactor
 
         # window border forcefield
         if (self.pos.x < 0) :
@@ -166,7 +166,7 @@ class Player(pygame.sprite.Sprite):
               collider = self.shield_collider
           if collider.collides(enemy.collider) :
               force = self.pos + texturesOffsets['PLAYER_SHIP'] - enemy.pos
-              force.scale_to_length(1.2)
+              force.scale_to_length(0.3)
               self.acc += force
               if self.shieldcd <= 0 :
                   self.hit()
@@ -206,7 +206,7 @@ class Player(pygame.sprite.Sprite):
                     self.eco = 12
                     self.set_notif('Upgrade : Low Consumption Lasers !', (54, 187, 245))
                 elif(upgrade.type == 'REACTOR'):
-                    self.reactor = 1.2
+                    self.reactor = 1.05
                     self.set_notif('Upgrade : Super Reactors !', (245, 141, 54))
                 elif(upgrade.type == 'RANGE'):
                     self.range = 65
