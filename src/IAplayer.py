@@ -96,7 +96,7 @@ class IAPlayer():
                 print('left')                 
                 inputs['left'] = self.smallStep('left', defaultDelay, True);
                 inputs['right'] = False if inputs['left'] else inputs['right']
-
+            
             elif( angle <= 0 and angle > -90 ) :
                 print('right')                 
                 inputs['right'] = self.smallStep('right', defaultDelay, True);
